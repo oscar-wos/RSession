@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11201.2 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftlyS2Template", "src\SwiftlyS2Template.csproj", "{FF469060-2A5D-EE11-1870-AD6223F812B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RLogger", "RLogger\src\RLogger.csproj", "{11395FA6-2403-93CF-31B6-DC4175D0A13D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF469060-2A5D-EE11-1870-AD6223F812B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF469060-2A5D-EE11-1870-AD6223F812B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF469060-2A5D-EE11-1870-AD6223F812B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF469060-2A5D-EE11-1870-AD6223F812B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11395FA6-2403-93CF-31B6-DC4175D0A13D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11395FA6-2403-93CF-31B6-DC4175D0A13D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11395FA6-2403-93CF-31B6-DC4175D0A13D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11395FA6-2403-93CF-31B6-DC4175D0A13D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5A3D049-33DE-4BAB-A6AA-FA87C21ED7EB}
+	EndGlobalSection
+EndGlobal
