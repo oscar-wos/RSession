@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace SwiftlyS2Template.Contracts;
+namespace Sessions.Contracts;
 
 public interface ILogService
 {

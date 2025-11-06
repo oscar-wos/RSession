@@ -1,14 +1,14 @@
 using Microsoft.Extensions.Logging;
 using RLogger;
+using Sessions.Contracts;
 using SwiftlyS2.Shared;
-using SwiftlyS2Template.Contracts;
 
-namespace SwiftlyS2Template.Services;
+namespace Sessions.Services;
 
 public class LogService(ISwiftlyCore core) : ILogService, IDisposable
 {
     private readonly Logger _logger = new(
-        Path.Join(core.GameDirectory, "logs", "SwiftlyS2Template"),
+        Path.Join(core.GameDirectory, "logs", "Sessions"),
         accuracy: 1
     );
 
