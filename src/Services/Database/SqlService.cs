@@ -4,7 +4,7 @@ using SwiftlyS2.Shared.Players;
 
 namespace Sessions.Services.Database;
 
-internal class SqlService : IDatabaseService, ISqlService
+internal class SqlService : ISqlService, IDatabaseService, IDisposable
 {
     public Task StartAsync() => throw new NotImplementedException();
 
@@ -34,4 +34,6 @@ internal class SqlService : IDatabaseService, ISqlService
 
     public Task UpdateSessionsAsync(IEnumerable<int> playerIds, IEnumerable<long> sessionIds) =>
         throw new NotImplementedException();
+
+    public void Dispose() { }
 }

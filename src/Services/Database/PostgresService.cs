@@ -4,7 +4,7 @@ using SwiftlyS2.Shared.Players;
 
 namespace Sessions.Services.Database;
 
-internal class PostgresService : IDatabaseService, IPostgresService
+internal class PostgresService : IPostgresService, IDatabaseService, IDisposable
 {
     public Task StartAsync() => throw new NotImplementedException();
 
@@ -34,4 +34,6 @@ internal class PostgresService : IDatabaseService, IPostgresService
 
     public Task UpdateSessionsAsync(IEnumerable<int> playerIds, IEnumerable<long> sessionIds) =>
         throw new NotImplementedException();
+
+    public void Dispose() { }
 }
