@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sessions.API.Contracts.Core;
 using Sessions.API.Contracts.Log;
@@ -8,12 +7,12 @@ using Sessions.Services.Core;
 using Sessions.Services.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
-using SwiftlyS2.Shared.Services;
+using Tomlyn.Extensions.Configuration;
 
 namespace Sessions;
 
 [PluginMetadata(
-    Id = "sessions",
+    Id = "Sessions",
     Version = "0.0.0",
     Name = "Sessions",
     Website = "https://github.com/oscar-wos/Sessions-swiftly",
@@ -41,10 +40,12 @@ public partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
         _logService.LogInformation("Loading config", logger: Core.Logger);
 
         _ = Core
-            .Configuration.InitializeJsonWithModel<SessionsConfig>("config.jsonc", "Sessions")
+            .Configuration.InitializeTomlWithModel<SessionsConfig>("config.toml", "Sessions")
             .Configure(builder =>
-                builder.AddJsonFile("config.jsonc", optional: false, reloadOnChange: true)
+                builder.AddTomlFile("config.toml", optional: false, reloadOnChange: true)
             );
+
+        _ = services.AddOptionsWithValidateOnStart<SessionsConfig>().BindConfiguration("Sessions");
 
         _logService.LogInformation("Loaded", logger: Core.Logger);
     }

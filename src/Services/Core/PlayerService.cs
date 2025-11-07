@@ -1,11 +1,24 @@
 using Sessions.API.Contracts.Core;
+using Sessions.API.Contracts.Database;
 using Sessions.API.Structs;
 
 namespace Sessions.Services.Core;
 
-internal class PlayerService : IPlayerService
+internal class PlayerService(IDatabaseFactory databaseFactory) : IPlayerService
 {
-    public Player? Player => throw new NotImplementedException();
+    private readonly IDatabaseService _database = databaseFactory.Database;
 
-    public Session? Session => throw new NotImplementedException();
+    public Player? Player { get; private set; }
+
+    public Session? Session { get; private set; }
+
+    public async Task LoadPlayerAsync(ulong steamId)
+    {
+        Player = await _database.GetPlayerAsync(steamId);
+
+        if (Player.HasValue)
+        {
+            await _database.UpdateSeenAsync(Player.Value.Id);
+        }
+    }
 }
