@@ -1,13 +1,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sessions.API.Contracts.Database;
 using Sessions.API.Contracts.Log;
+using Sessions.API.Models;
 
 namespace Sessions;
 
 internal class DatabaseFactory : IDatabaseFactory, IDisposable
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly IOptionsMonitor<SessionsConfig> _config;
     private readonly ILogService _logService;
     private readonly ILogger<DatabaseFactory> _logger;
 
@@ -15,15 +18,17 @@ internal class DatabaseFactory : IDatabaseFactory, IDisposable
 
     public DatabaseFactory(
         IServiceProvider serviceProvider,
+        IOptionsMonitor<SessionsConfig> config,
         ILogService logService,
         ILogger<DatabaseFactory> logger
     )
     {
         _serviceProvider = serviceProvider;
+        _config = config;
         _logService = logService;
         _logger = logger;
 
-        string type = "postgres";
+        string type = _config.CurrentValue.Database.Type;
 
         Database = type.ToLowerInvariant() switch
         {

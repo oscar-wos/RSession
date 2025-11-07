@@ -1,11 +1,14 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sessions.API.Contracts.Core;
 using Sessions.API.Contracts.Log;
+using Sessions.API.Models;
 using Sessions.Extensions;
 using Sessions.Services.Core;
 using Sessions.Services.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
+using SwiftlyS2.Shared.Services;
 
 namespace Sessions;
 
@@ -33,8 +36,16 @@ public partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
         _ = services.AddSingleton<ILogService, LogService>();
 
         _serviceProvider = services.BuildServiceProvider();
-
         _logService = _serviceProvider.GetRequiredService<ILogService>();
+
+        _logService.LogInformation("Loading config", logger: Core.Logger);
+
+        _ = Core
+            .Configuration.InitializeJsonWithModel<SessionsConfig>("config.jsonc", "Sessions")
+            .Configure(builder =>
+                builder.AddJsonFile("config.jsonc", optional: false, reloadOnChange: true)
+            );
+
         _logService.LogInformation("Loaded", logger: Core.Logger);
     }
 
