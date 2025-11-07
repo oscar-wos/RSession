@@ -42,19 +42,11 @@ internal sealed class HookManager : IHookManager, IDisposable
     {
         _core.Event.OnClientSteamAuthorize += _playerAuthorizeService.OnClientSteamAuthorize;
 
+        _logService.LogInformation("CUserMessageSayText2 hooked", logger: _logger);
+
         _cUserMessageSayText2Guid = _core.NetMessage.HookServerMessage<CUserMessageSayText2>(msg =>
         {
-            Console.WriteLine(msg);
-            /*
-            int entity = msg.Entityindex;
-            string message = msg.Param2;
-
-            _logService.LogInformation(
-                $"CUserMessageSayText2 {entity} | {message}",
-                logger: _logger
-            );
-            */
-
+            _playerMessageService.OnClientMessage(in msg);
             return HookResult.Continue;
         });
 
@@ -78,10 +70,6 @@ internal sealed class HookManager : IHookManager, IDisposable
         _logService.LogInformation("Disposing HookManager", logger: _logger);
 
         _core.Event.OnClientSteamAuthorize -= _playerAuthorizeService.OnClientSteamAuthorize;
-
-        if (_cUserMessageSayText2Guid != Guid.Empty)
-        {
-            _core.NetMessage.UnhookServerMessage<CUserMessageSayText2>();
-        }
+        _core.NetMessage.Unhook(_cUserMessageSayText2Guid);
     }
 }
