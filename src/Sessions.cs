@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sessions.API.Contracts.Core;
+using Sessions.API.Contracts.Database;
 using Sessions.API.Contracts.Log;
 using Sessions.API.Models;
 using Sessions.Extensions;
@@ -8,6 +9,7 @@ using Sessions.Services.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
 using Tomlyn.Extensions.Configuration;
+using IDatabaseService = Sessions.API.Contracts.Database.IDatabaseService;
 
 namespace Sessions;
 
@@ -34,11 +36,6 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
         _ = services.AddSingleton<IServerService, ServerService>();
         _ = services.AddSingleton<ILogService, LogService>();
 
-        _serviceProvider = services.BuildServiceProvider();
-        _logService = _serviceProvider.GetRequiredService<ILogService>();
-
-        _logService.LogInformation("Loading config", logger: Core.Logger);
-
         _ = Core
             .Configuration.InitializeTomlWithModel<DatabaseConfig>("database.toml", "database")
             .Configure(builder =>
@@ -47,10 +44,21 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
 
         _ = services.AddOptionsWithValidateOnStart<DatabaseConfig>().BindConfiguration("database");
 
+        _serviceProvider = services.BuildServiceProvider();
+
+        _logService = _serviceProvider.GetRequiredService<ILogService>();
         _logService.LogInformation("Loaded", logger: Core.Logger);
     }
 
-    public override void UseSharedInterface(IInterfaceManager interfaceManager) { }
+    public override void UseSharedInterface(IInterfaceManager interfaceManager)
+    {
+        if (_serviceProvider?.GetRequiredService<IDatabaseFactory>() is not { } databaseFactory)
+        {
+            return;
+        }
+
+        databaseFactory.Database.StartAsync().GetAwaiter().GetResult();
+    }
 
     public override void Load(bool hotReload) { }
 
