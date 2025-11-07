@@ -7,7 +7,7 @@ using Sessions.API.Models;
 
 namespace Sessions;
 
-internal class DatabaseFactory : IDatabaseFactory, IDisposable
+internal sealed class DatabaseFactory : IDatabaseFactory, IDisposable
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IOptionsMonitor<DatabaseConfig> _config;

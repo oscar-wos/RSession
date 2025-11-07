@@ -3,7 +3,7 @@ using Sessions.API.Structs;
 
 namespace Sessions.Services.Core;
 
-internal class ServerService : IServerService
+public sealed class ServerService : IServerService
 {
     public Server? Server => throw new NotImplementedException();
 

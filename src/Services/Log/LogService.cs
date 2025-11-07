@@ -6,7 +6,7 @@ using SwiftlyS2.Shared;
 
 namespace Sessions.Services.Log;
 
-public class LogService(ISwiftlyCore core) : ILogService, IDisposable
+public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
 {
     private const string PLUGIN_NAME = "Sessions";
 

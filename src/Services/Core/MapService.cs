@@ -2,4 +2,4 @@ using Sessions.API.Contracts.Core;
 
 namespace Sessions.Services.Core;
 
-internal class MapService : IMapService { }
+public sealed class MapService : IMapService { }

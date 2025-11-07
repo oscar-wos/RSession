@@ -18,7 +18,7 @@ namespace Sessions;
     Website = "https://github.com/oscar-wos/Sessions-swiftly",
     Author = "oscar-wos"
 )]
-public partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
+public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
 {
     private IServiceProvider? _serviceProvider;
     private ILogService? _logService;

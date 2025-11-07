@@ -4,7 +4,7 @@ using Sessions.API.Structs;
 
 namespace Sessions.Services.Core;
 
-internal class PlayerService(IDatabaseFactory databaseFactory) : IPlayerService
+public sealed class PlayerService(IDatabaseFactory databaseFactory) : IPlayerService
 {
     private readonly IDatabaseService _database = databaseFactory.Database;
 
