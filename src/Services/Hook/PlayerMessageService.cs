@@ -17,6 +17,10 @@ public sealed class PlayerMessageService(
 {
     private static readonly uint _cStrikeChatAllHash = MurmurHash2.HashString("Cstrike_Chat_All");
 
+    private static readonly uint _cStrikeChatAllSpecHash = MurmurHash2.HashString(
+        "Cstrike_Chat_AllSpec"
+    );
+
     private readonly ISwiftlyCore _core = core;
     private readonly IDatabaseService _database = databaseFactory.Database;
 
@@ -46,7 +50,7 @@ public sealed class PlayerMessageService(
         short teamNum = player.Controller.TeamNum;
         bool teamChat = true;
 
-        if (hash == _cStrikeChatAllHash)
+        if (hash == _cStrikeChatAllHash || hash == _cStrikeChatAllSpecHash)
         {
             teamChat = false;
         }
