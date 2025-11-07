@@ -1,4 +1,9 @@
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MySqlConnector;
 using Sessions.API.Contracts.Database;
+using Sessions.API.Contracts.Log;
+using Sessions.API.Models.Config;
 using Sessions.API.Structs;
 using SwiftlyS2.Shared.Players;
 
@@ -6,6 +11,24 @@ namespace Sessions.Services.Database;
 
 public sealed class SqlService : ISqlService, IDatabaseService, IDisposable
 {
+    private readonly IOptionsMonitor<DatabaseConfig> _config;
+    private readonly ILogService _logService;
+    private readonly ILogger<SqlService> _logger;
+    private readonly MySqlConnection _connection;
+
+    public SqlService(
+        IOptionsMonitor<DatabaseConfig> config,
+        ILogService logService,
+        ILogger<SqlService> logger
+    )
+    {
+        _config = config;
+        _logService = logService;
+        _logger = logger;
+
+        _connection = new MySqlConnection(_config.CurrentValue.Connection.Host);
+    }
+
     public Task StartAsync() => throw new NotImplementedException();
 
     public Task<Alias> GetAliasAsync(int playerId) => throw new NotImplementedException();
@@ -35,5 +58,8 @@ public sealed class SqlService : ISqlService, IDatabaseService, IDisposable
     public Task UpdateSessionsAsync(IEnumerable<int> playerIds, IEnumerable<long> sessionIds) =>
         throw new NotImplementedException();
 
-    public void Dispose() { }
+    public void Dispose()
+    {
+        _logService.LogInformation("Disposing SqlService", logger: _logger);
+    }
 }

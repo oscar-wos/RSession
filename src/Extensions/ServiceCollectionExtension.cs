@@ -20,7 +20,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddHooks(this IServiceCollection services)
     {
         _ = services.AddSingleton<IHookManager, HookManager>();
-        _ = services.AddSingleton<IPlayerConnectService, PlayerConnectService>();
+        _ = services.AddSingleton<IPlayerAuthorizeService, PlayerAuthorizeService>();
         _ = services.AddSingleton<IPlayerMessageService, PlayerMessageService>();
 
         return services;

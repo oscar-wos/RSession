@@ -20,7 +20,7 @@ public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
     {
 #if DEBUG
         logger?.LogDebug(exception, "{message}", message);
-        _logger.Debug($"[{PLUGIN_NAME}] {message}", exception);
+        _logger.Debug($"{PLUGIN_NAME} {message}", exception);
 #endif
     }
 
@@ -31,7 +31,7 @@ public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
         logger?.LogInformation(exception, "{message}", message);
 #endif
 
-        _logger.Information($"[{PLUGIN_NAME}] {message}", exception);
+        _logger.Information($"{PLUGIN_NAME} {message}", exception);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -41,7 +41,7 @@ public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
         logger?.LogWarning(exception, "{message}", message);
 #endif
 
-        _logger.Warning($"[{PLUGIN_NAME}] {message}", exception);
+        _logger.Warning($"{PLUGIN_NAME} {message}", exception);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -51,7 +51,7 @@ public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
         logger?.LogError(exception, "{message}", message);
 #endif
 
-        _logger.Error($"[{PLUGIN_NAME}] {message}", exception);
+        _logger.Error($"{PLUGIN_NAME} {message}", exception);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -65,7 +65,7 @@ public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
         logger?.LogCritical(exception, "{message}", message);
 #endif
 
-        return _logger.Critical($"[{PLUGIN_NAME}] {message}", exception);
+        return _logger.Critical($"{PLUGIN_NAME} {message}", exception);
     }
 
     public void Dispose()

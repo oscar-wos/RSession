@@ -66,5 +66,8 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
     public Task UpdateSessionsAsync(IEnumerable<int> playerIds, IEnumerable<long> sessionIds) =>
         throw new NotImplementedException();
 
-    public void Dispose() { }
+    public void Dispose()
+    {
+        _logService.LogInformation("Disposing PostgresService", logger: _logger);
+    }
 }

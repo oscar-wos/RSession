@@ -5,7 +5,7 @@ using Sessions.API.Contracts.Database;
 using Sessions.API.Contracts.Log;
 using Sessions.API.Models.Config;
 
-namespace Sessions;
+namespace Sessions.Services.Database;
 
 internal sealed class DatabaseFactory : IDatabaseFactory, IDisposable
 {
