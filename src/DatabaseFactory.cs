@@ -40,7 +40,7 @@ internal sealed class DatabaseFactory : IDatabaseFactory, IDisposable
             ),
         };
 
-        _logService.LogInformation($"Database factory initialized with '{type}'", logger: _logger);
+        _logService.LogInformation($"Database factory initialized - {type}", logger: _logger);
     }
 
     public void Dispose() => (Database as IDisposable)?.Dispose();

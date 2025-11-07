@@ -31,6 +31,7 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
         ServiceCollection services = new();
 
         _ = services.AddSwiftly(Core);
+
         _ = services.AddDatabase();
         _ = services.AddHooks();
 
