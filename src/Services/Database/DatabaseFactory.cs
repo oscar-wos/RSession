@@ -7,7 +7,7 @@ using Sessions.API.Models.Config;
 
 namespace Sessions.Services.Database;
 
-internal sealed class DatabaseFactory : IDatabaseFactory, IDisposable
+internal sealed class DatabaseFactory : IDatabaseFactory
 {
     private readonly IServiceProvider _services;
     private readonly IOptionsMonitor<DatabaseConfig> _config;
@@ -40,8 +40,6 @@ internal sealed class DatabaseFactory : IDatabaseFactory, IDisposable
             ),
         };
 
-        _logService.LogInformation($"Database factory initialized - {type}", logger: _logger);
+        _logService.LogInformation($"DatabaseFactory initialized - {type}", logger: _logger);
     }
-
-    public void Dispose() => (Database as IDisposable)?.Dispose();
 }

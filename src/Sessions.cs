@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sessions.API.Contracts.Core;
 using Sessions.API.Contracts.Database;
+using Sessions.API.Contracts.Hook;
 using Sessions.API.Contracts.Log;
 using Sessions.API.Models.Config;
 using Sessions.Extensions;
@@ -23,6 +24,7 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
 {
     private IServiceProvider? _services;
 
+    private IHookManager? _hookManager;
     private IDatabaseService? _databaseService;
     private ILogService? _logService;
 
@@ -54,6 +56,9 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
 
     public override void UseSharedInterface(IInterfaceManager interfaceManager)
     {
+        _hookManager = _services?.GetRequiredService<IHookManager>();
+        _hookManager?.Init();
+
         _databaseService?.StartAsync().GetAwaiter().GetResult();
 
         _logService = _services?.GetRequiredService<ILogService>();

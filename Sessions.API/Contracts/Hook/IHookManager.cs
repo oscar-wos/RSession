@@ -1,3 +1,6 @@
 namespace Sessions.API.Contracts.Hook;
 
-public interface IHookManager { }
+public interface IHookManager
+{
+    void Init();
+}
