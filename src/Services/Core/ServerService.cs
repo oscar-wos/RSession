@@ -49,7 +49,7 @@ public sealed class ServerService(
                     _core.Engine.GlobalVars.MapName
                 );
 
-                sessionsServer = sessionsServer with { Map = sessionsMap };
+                Server = sessionsServer with { Map = sessionsMap };
 
                 foreach (IPlayer player in _core.PlayerManager.GetAllPlayers())
                 {
