@@ -41,20 +41,20 @@ public sealed class OnClientMessageService(
         string message = msg.Param2;
         string messageName = msg.Messagename;
 
-        _logService.LogDebug(
-            $"Message - {player.Controller.PlayerName}: {message} ({messageName})",
-            logger: _logger
-        );
-
         short teamNum = player.Controller.TeamNum;
         bool teamChat = true;
 
-        uint hash = MurmurHash2.HashString(messageName);
+        uint messageNameHash = MurmurHash2.HashString(messageName);
 
-        if (hash == _cStrikeChatAllHash || hash == _cStrikeChatAllSpecHash)
+        if (messageNameHash == _cStrikeChatAllHash || messageNameHash == _cStrikeChatAllSpecHash)
         {
             teamChat = false;
         }
+
+        _logService.LogDebug(
+            $"Message - {player.Controller.PlayerName}: {message} ({messageName}) | Num: {teamNum} | Team: {teamChat}",
+            logger: _logger
+        );
 
         _playerService.Value.HandlePlayerMessage(player, teamNum, teamChat, message);
     }

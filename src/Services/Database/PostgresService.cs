@@ -193,7 +193,7 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
         }
     }
 
-    public async Task<SessionsSession> GetSessionAsync(int playerId, int serverId, string ip)
+    public async Task<SessionsSession> GetSessionAsync(int playerId, short serverId, string ip)
     {
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync()
@@ -218,6 +218,13 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync()
             .ConfigureAwait(false);
+
+        await using NpgsqlCommand command = new(_queries.InsertAlias, connection);
+
+        _ = command.Parameters.AddWithValue("@playerId", playerId);
+        _ = command.Parameters.AddWithValue("@name", name);
+
+        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
     }
 
     public async Task InsertMessageAsync(
@@ -243,21 +250,37 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
         _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
     }
 
-    public async Task UpdateSessionsAsync(IEnumerable<int> playerIds, IEnumerable<long> sessionIds)
+    public async Task InsertRotationAsync(short serverId, short mapId)
     {
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync()
             .ConfigureAwait(false);
 
-        await using NpgsqlCommand updatePlayerCommand = new(_queries.UpdateSeen, connection);
-        _ = updatePlayerCommand.Parameters.AddWithValue("@playerIds", playerIds.ToArray());
+        await using NpgsqlCommand command = new(_queries.InsertRotation, connection);
 
-        _ = await updatePlayerCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
+        _ = command.Parameters.AddWithValue("@serverId", serverId);
+        _ = command.Parameters.AddWithValue("@mapId", mapId);
 
-        await using NpgsqlCommand updateSessionCommand = new(_queries.UpdateSession, connection);
-        _ = updateSessionCommand.Parameters.AddWithValue("@sessionIds", sessionIds.ToArray());
+        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+    }
 
-        _ = await updateSessionCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
+    public async Task UpdateSessionsAsync(List<int> playerIds, List<long> sessionIds)
+    {
+        await using NpgsqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using (NpgsqlCommand command = new(_queries.UpdateSeen, connection))
+        {
+            _ = command.Parameters.AddWithValue("@playerIds", playerIds);
+            _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+
+        await using (NpgsqlCommand command = new(_queries.UpdateSession, connection))
+        {
+            _ = command.Parameters.AddWithValue("@sessionIds", sessionIds);
+            _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
     }
 
     public void Dispose() =>

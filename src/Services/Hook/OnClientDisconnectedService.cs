@@ -35,6 +35,11 @@ public sealed class OnClientDisconnectedService(
             return;
         }
 
+        if (!player.IsAuthorized)
+        {
+            return;
+        }
+
         _playerService.Value.HandlePlayerDisconnected(player);
     }
 }

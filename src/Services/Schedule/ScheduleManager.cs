@@ -19,5 +19,9 @@ public sealed class ScheduleManager(
 
     private readonly IIntervalService _intervalService = intervalService;
 
-    public void Init() => _core.Scheduler.Repeat(64, _intervalService.OnInterval);
+    public void Init()
+    {
+        _ = _core.Scheduler.Repeat(64, _intervalService.OnInterval);
+        _logService.LogInformation("ScheduleManager initialized", logger: _logger);
+    }
 }

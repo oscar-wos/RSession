@@ -5,6 +5,7 @@ using Sessions.API.Contracts.Database;
 using Sessions.API.Contracts.Log;
 using Sessions.API.Models.Config;
 using Sessions.API.Structs;
+using Sessions.Models;
 
 namespace Sessions.Services.Database;
 
@@ -16,6 +17,7 @@ public sealed class SqlService : ISqlService, IDatabaseService, IDisposable
     private readonly ILogger<SqlService> _logger;
 
     private readonly MySqlDataSource _dataSource;
+    private readonly SqlQueries _queries;
 
     public SqlService(
         IOptionsMonitor<DatabaseConfig> config,
@@ -30,6 +32,8 @@ public sealed class SqlService : ISqlService, IDatabaseService, IDisposable
 
         string connectionString = BuildConnectionString(_config.CurrentValue.Connection);
         _dataSource = new MySqlDataSourceBuilder(connectionString).Build();
+
+        _queries = new SqlQueries();
     }
 
     private string BuildConnectionString(ConnectionConfig config)
@@ -52,43 +56,232 @@ public sealed class SqlService : ISqlService, IDatabaseService, IDisposable
 
     public async Task InitAsync()
     {
-        try { }
-        catch (MySqlException ex)
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using MySqlTransaction transaction = await connection
+            .BeginTransactionAsync()
+            .ConfigureAwait(false);
+
+        foreach (string query in _queries.GetLoadQueries())
         {
-            _logService.LogError("SqlService.InitAsync()", exception: ex, logger: _logger);
+            await using MySqlCommand command = new(query, connection, transaction);
+            _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+
+        await transaction.CommitAsync().ConfigureAwait(false);
+    }
+
+    public async Task<SessionsAlias?> GetAliasAsync(int playerId)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using MySqlCommand command = new(_queries.SelectAlias, connection);
+        _ = command.Parameters.AddWithValue("@playerId", playerId);
+
+        await using MySqlDataReader reader = await command
+            .ExecuteReaderAsync()
+            .ConfigureAwait(false);
+
+        if (await reader.ReadAsync().ConfigureAwait(false))
+        {
+            return new SessionsAlias() { Id = reader.GetInt64(0), Name = reader.GetString(1) };
+        }
+
+        return null;
+    }
+
+    public async Task<SessionsMap> GetMapAsync(string mapName)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using (MySqlCommand command = new(_queries.SelectMap, connection))
+        {
+            _ = command.Parameters.AddWithValue("@name", mapName);
+
+            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is short result)
+            {
+                return new SessionsMap() { Id = result };
+            }
+        }
+
+        await using (MySqlCommand command = new(_queries.InsertMap, connection))
+        {
+            _ = command.Parameters.AddWithValue("@name", mapName);
+
+            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is not short result)
+            {
+                throw new Exception("Failed to insert map");
+            }
+
+            return new SessionsMap() { Id = result };
         }
     }
 
-    public Task<SessionsAlias?> GetAliasAsync(int playerId) => throw new NotImplementedException();
+    public async Task<SessionsPlayer> GetPlayerAsync(ulong steamId)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
 
-    public Task<SessionsMap> GetMapAsync(string mapName) => throw new NotImplementedException();
+        await using (MySqlCommand command = new(_queries.SelectPlayer, connection))
+        {
+            _ = command.Parameters.AddWithValue("@steamId", (long)steamId);
 
-    public Task<SessionsPlayer> GetPlayerAsync(ulong steamId) =>
-        throw new NotImplementedException();
+            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is int result)
+            {
+                return new SessionsPlayer() { Id = result };
+            }
+        }
 
-    public Task<SessionsServer> GetServerAsync(string serverIp, ushort serverPort) =>
-        throw new NotImplementedException();
+        await using (MySqlCommand command = new(_queries.InsertPlayer, connection))
+        {
+            _ = command.Parameters.AddWithValue("@steamId", (long)steamId);
 
-    public Task<SessionsSession> GetSessionAsync(int playerId, int serverId, string ip) =>
-        throw new NotImplementedException();
+            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is not int result)
+            {
+                throw new Exception("Failed to insert player");
+            }
 
-    public Task InsertAliasAsync(int playerId, string name) => throw new NotImplementedException();
+            return new SessionsPlayer() { Id = result };
+        }
+    }
 
-    public Task InsertMessageAsync(
+    public async Task<SessionsServer> GetServerAsync(string ip, ushort port)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using (MySqlCommand command = new(_queries.SelectServer, connection))
+        {
+            _ = command.Parameters.AddWithValue("@ip", ip);
+            _ = command.Parameters.AddWithValue("@port", (short)port);
+
+            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is short result)
+            {
+                return new SessionsServer()
+                {
+                    Id = result,
+                    Ip = ip,
+                    Port = port,
+                };
+            }
+        }
+
+        await using (MySqlCommand command = new(_queries.InsertServer, connection))
+        {
+            _ = command.Parameters.AddWithValue("@ip", ip);
+            _ = command.Parameters.AddWithValue("@port", (short)port);
+
+            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is not short result)
+            {
+                throw new Exception("Failed to insert server");
+            }
+
+            return new SessionsServer()
+            {
+                Id = result,
+                Ip = ip,
+                Port = port,
+            };
+        }
+    }
+
+    public async Task<SessionsSession> GetSessionAsync(int playerId, short serverId, string ip)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using MySqlCommand command = new(_queries.InsertSession, connection);
+
+        _ = command.Parameters.AddWithValue("@playerId", playerId);
+        _ = command.Parameters.AddWithValue("@serverId", serverId);
+        _ = command.Parameters.AddWithValue("@ip", ip);
+
+        if (await command.ExecuteScalarAsync().ConfigureAwait(false) is not long result)
+        {
+            throw new Exception("Failed to insert session");
+        }
+
+        return new SessionsSession() { Id = result };
+    }
+
+    public async Task InsertAliasAsync(int playerId, string name)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using MySqlCommand command = new(_queries.InsertAlias, connection);
+
+        _ = command.Parameters.AddWithValue("@playerId", playerId);
+        _ = command.Parameters.AddWithValue("@name", name);
+
+        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+    }
+
+    public async Task InsertMessageAsync(
         int playerId,
         long sessionId,
         short teamNum,
         bool teamChat,
         string message
-    ) => throw new NotImplementedException();
-
-    public Task UpdateSeenAsync(int playerId) => throw new NotImplementedException();
-
-    public Task UpdateSessionsAsync(IEnumerable<int> playerIds, IEnumerable<long> sessionIds) =>
-        throw new NotImplementedException();
-
-    public void Dispose()
+    )
     {
-        _logService.LogInformation("Disposing SqlService", logger: _logger);
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using MySqlCommand command = new(_queries.InsertMessage, connection);
+
+        _ = command.Parameters.AddWithValue("@playerId", playerId);
+        _ = command.Parameters.AddWithValue("@sessionId", sessionId);
+        _ = command.Parameters.AddWithValue("@teamNum", teamNum);
+        _ = command.Parameters.AddWithValue("@teamChat", teamChat);
+        _ = command.Parameters.AddWithValue("@message", message);
+
+        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
     }
+
+    public async Task InsertRotationAsync(short serverId, short mapId)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using MySqlCommand command = new(_queries.InsertRotation, connection);
+
+        _ = command.Parameters.AddWithValue("@serverId", serverId);
+        _ = command.Parameters.AddWithValue("@mapId", mapId);
+
+        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+    }
+
+    public async Task UpdateSessionsAsync(List<int> playerIds, List<long> sessionIds)
+    {
+        await using MySqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using (MySqlCommand command = new(_queries.UpdateSeen, connection))
+        {
+            _ = command.Parameters.AddWithValue("@playerIds", playerIds);
+            _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+
+        await using (MySqlCommand command = new(_queries.UpdateSession, connection))
+        {
+            _ = command.Parameters.AddWithValue("@sessionIds", sessionIds);
+            _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+    }
+
+    public void Dispose() => _logService.LogInformation("Disposing SqlService", logger: _logger);
 }

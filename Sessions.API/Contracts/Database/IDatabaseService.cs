@@ -9,7 +9,7 @@ public interface IDatabaseService
     Task<SessionsMap> GetMapAsync(string mapName);
     Task<SessionsPlayer> GetPlayerAsync(ulong steamId);
     Task<SessionsServer> GetServerAsync(string serverIp, ushort serverPort);
-    Task<SessionsSession> GetSessionAsync(int playerId, int serverId, string ip);
+    Task<SessionsSession> GetSessionAsync(int playerId, short serverId, string ip);
     Task InsertAliasAsync(int playerId, string name);
     Task InsertMessageAsync(
         int playerId,
@@ -18,5 +18,6 @@ public interface IDatabaseService
         bool teamChat,
         string message
     );
-    Task UpdateSessionsAsync(IEnumerable<int> playerIds, IEnumerable<long> sessionIds);
+    Task InsertRotationAsync(short serverId, short mapId);
+    Task UpdateSessionsAsync(List<int> playerIds, List<long> sessionIds);
 }

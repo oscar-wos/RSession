@@ -45,9 +45,13 @@ public sealed class ServerService(
                     .GetServerAsync(serverIp, serverPort)
                     .ConfigureAwait(false);
 
-                SessionsMap sessionsMap = await _database.GetMapAsync(
-                    _core.Engine.GlobalVars.MapName
-                );
+                SessionsMap sessionsMap = await _database
+                    .GetMapAsync(_core.Engine.GlobalVars.MapName)
+                    .ConfigureAwait(false);
+
+                await _database
+                    .InsertRotationAsync(sessionsServer.Id, sessionsMap.Id)
+                    .ConfigureAwait(false);
 
                 Server = sessionsServer with { Map = sessionsMap };
 
@@ -65,6 +69,36 @@ public sealed class ServerService(
             {
                 throw _logService.LogCritical(
                     "ServerService.Init()",
+                    exception: ex,
+                    logger: _logger
+                );
+            }
+        });
+
+    public void HandleMapLoad(string mapName) =>
+        Task.Run(async () =>
+        {
+            try
+            {
+                if (Server is not { } sessionsServer)
+                {
+                    return;
+                }
+
+                SessionsMap sessionsMap = await _database
+                    .GetMapAsync(mapName)
+                    .ConfigureAwait(false);
+
+                await _database
+                    .InsertRotationAsync(sessionsServer.Id, sessionsMap.Id)
+                    .ConfigureAwait(false);
+
+                Server = sessionsServer with { Map = sessionsMap };
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError(
+                    "ServerService.HandleMapLoad()",
                     exception: ex,
                     logger: _logger
                 );

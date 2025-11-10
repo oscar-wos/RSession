@@ -6,4 +6,5 @@ public interface IServerService
 {
     SessionsServer? Server { get; }
     void Init();
+    void HandleMapLoad(string mapName);
 }

@@ -1,4 +1,3 @@
-using System.Numerics;
 using Microsoft.Extensions.Logging;
 using Sessions.API.Contracts.Core;
 using Sessions.API.Contracts.Database;

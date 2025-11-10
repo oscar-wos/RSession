@@ -102,18 +102,11 @@ public class PostgresQueries : LoadQueries, IDatabaseQueries
     public string UpdateSession =>
         "UPDATE sessions SET end_time = NOW() WHERE id = ANY(@sessionIds)";
 
-    /// <summary>
-    ///  12312
-    ///
-    ///
-    ///
-    ///
-    ///
-    /// </summary>
     public string SelectAlias =>
         "SELECT id, name FROM aliases WHERE player_id = @playerId ORDER BY id DESC LIMIT 1";
 
     public string InsertAlias => "INSERT INTO aliases (player_id, name) VALUES (@playerId, @name)";
+
     public string InsertMessage =>
         "INSERT INTO messages (player_id, session_id, team_num, team_chat, message) VALUES (@playerId, @sessionId, @teamNum, @teamChat, @message)";
 }
