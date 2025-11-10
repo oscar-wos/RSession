@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Database;
+using Sessions.API.Contracts.Core;
 using Sessions.API.Contracts.Hook;
 using Sessions.API.Contracts.Log;
 using SwiftlyS2.Shared;
@@ -7,18 +7,19 @@ using SwiftlyS2.Shared.Events;
 
 namespace Sessions.Services.Hook;
 
-public sealed class PlayerAuthorizeService(
+public sealed class OnClientSteamAuthorizeService(
     ISwiftlyCore core,
-    IDatabaseFactory databaseFactory,
     ILogService logService,
-    ILogger<PlayerAuthorizeService> logger
-) : IPlayerAuthorizeService
+    ILogger<OnClientSteamAuthorizeService> logger,
+    Lazy<IPlayerService> playerService
+) : IOnClientSteamAuthorizeService
 {
     private readonly ISwiftlyCore _core = core;
-    private readonly IDatabaseService _database = databaseFactory.Database;
 
     private readonly ILogService _logService = logService;
-    private readonly ILogger<PlayerAuthorizeService> _logger = logger;
+    private readonly ILogger<OnClientSteamAuthorizeService> _logger = logger;
+
+    private readonly Lazy<IPlayerService> _playerService = playerService;
 
     public void OnClientSteamAuthorize(IOnClientSteamAuthorizeEvent @event)
     {
@@ -27,5 +28,7 @@ public sealed class PlayerAuthorizeService(
             _logService.LogWarning($"Player not authorized - {@event.PlayerId}", logger: _logger);
             return;
         }
+
+        _playerService.Value.HandlePlayerAuthorize(player);
     }
 }

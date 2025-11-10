@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Database;
+using Sessions.API.Contracts.Core;
 using Sessions.API.Contracts.Hook;
 using Sessions.API.Contracts.Log;
 using SwiftlyS2.Shared;
@@ -8,12 +8,12 @@ using SwiftlyS2.Shared.ProtobufDefinitions;
 
 namespace Sessions.Services.Hook;
 
-public sealed class PlayerMessageService(
+public sealed class OnClientMessageService(
     ISwiftlyCore core,
-    IDatabaseFactory databaseFactory,
     ILogService logService,
-    ILogger<PlayerMessageService> logger
-) : IPlayerMessageService
+    ILogger<OnClientMessageService> logger,
+    Lazy<IPlayerService> playerService
+) : IOnClientMessageService
 {
     private static readonly uint _cStrikeChatAllHash = MurmurHash2.HashString("Cstrike_Chat_All");
 
@@ -22,10 +22,11 @@ public sealed class PlayerMessageService(
     );
 
     private readonly ISwiftlyCore _core = core;
-    private readonly IDatabaseService _database = databaseFactory.Database;
 
     private readonly ILogService _logService = logService;
-    private readonly ILogger<PlayerMessageService> _logger = logger;
+    private readonly ILogger<OnClientMessageService> _logger = logger;
+
+    private readonly Lazy<IPlayerService> _playerService = playerService;
 
     public void OnClientMessage(in CUserMessageSayText2 msg)
     {
@@ -45,18 +46,16 @@ public sealed class PlayerMessageService(
             logger: _logger
         );
 
-        uint hash = MurmurHash2.HashString(messageName);
-
         short teamNum = player.Controller.TeamNum;
         bool teamChat = true;
+
+        uint hash = MurmurHash2.HashString(messageName);
 
         if (hash == _cStrikeChatAllHash || hash == _cStrikeChatAllSpecHash)
         {
             teamChat = false;
         }
 
-        _ = Task.Run(async () =>
-            await _database.InsertMessageAsync(0, 0, teamNum, teamChat, message)
-        );
+        _playerService.Value.HandlePlayerMessage(player, teamNum, teamChat, message);
     }
 }

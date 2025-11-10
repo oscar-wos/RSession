@@ -1,0 +1,24 @@
+using Microsoft.Extensions.Logging;
+using Sessions.API.Contracts.Core;
+using Sessions.API.Contracts.Hook;
+using Sessions.API.Contracts.Log;
+
+namespace Sessions.Services.Hook;
+
+public sealed class OnSteamAPIActivatedService(
+    ILogService logService,
+    ILogger<OnSteamAPIActivatedService> logger,
+    Lazy<IServerService> serviceService
+) : IOnSteamAPIActivatedService
+{
+    private readonly ILogService _logService = logService;
+    private readonly ILogger<OnSteamAPIActivatedService> _logger = logger;
+
+    private readonly Lazy<IServerService> _serviceService = serviceService;
+
+    public void OnSteamAPIActivated()
+    {
+        _logService.LogInformation("Steam API activated", logger: _logger);
+        _serviceService.Value.Init();
+    }
+}

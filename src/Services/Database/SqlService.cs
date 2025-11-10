@@ -15,7 +15,7 @@ public sealed class SqlService : ISqlService, IDatabaseService, IDisposable
     private readonly ILogService _logService;
     private readonly ILogger<SqlService> _logger;
 
-    private readonly MySqlConnection _connection;
+    private readonly MySqlDataSource _dataSource;
 
     public SqlService(
         IOptionsMonitor<DatabaseConfig> config,
@@ -28,29 +28,55 @@ public sealed class SqlService : ISqlService, IDatabaseService, IDisposable
         _logService = logService;
         _logger = logger;
 
-        _connection = new MySqlConnection(_config.CurrentValue.Connection.Host);
+        string connectionString = BuildConnectionString(_config.CurrentValue.Connection);
+        _dataSource = new MySqlDataSourceBuilder(connectionString).Build();
     }
 
-    public Task StartAsync() => throw new NotImplementedException();
+    private string BuildConnectionString(ConnectionConfig config)
+    {
+        MySqlConnectionStringBuilder builder = new()
+        {
+            Server = config.Host,
+            Port = (uint)config.Port,
+            UserID = config.Username,
+            Password = config.Password,
+            Database = config.Database,
+            Pooling = true,
+        };
 
-    public Task<Alias> GetAliasAsync(int playerId) => throw new NotImplementedException();
+        string connectionString = builder.ConnectionString;
+        _logService.LogDebug(connectionString, logger: _logger);
 
-    public Task<Map> GetMapAsync(string mapName) => throw new NotImplementedException();
+        return builder.ConnectionString;
+    }
 
-    public Task<Player> GetPlayerAsync(ulong steamId) => throw new NotImplementedException();
+    public async Task InitAsync()
+    {
+        try { }
+        catch (MySqlException ex)
+        {
+            _logService.LogError("SqlService.InitAsync()", exception: ex, logger: _logger);
+        }
+    }
 
-    public Task<Server> GetServerAsync(string serverIp, ushort serverPort) =>
+    public Task<SessionsAlias?> GetAliasAsync(int playerId) => throw new NotImplementedException();
+
+    public Task<SessionsMap> GetMapAsync(string mapName) => throw new NotImplementedException();
+
+    public Task<SessionsPlayer> GetPlayerAsync(ulong steamId) =>
         throw new NotImplementedException();
 
-    public Task<Session> GetSessionAsync(int playerId, int serverId, int mapId, string ip) =>
+    public Task<SessionsServer> GetServerAsync(string serverIp, ushort serverPort) =>
         throw new NotImplementedException();
 
-    public Task InsertAliasAsync(long sessionId, int playerId, string name) =>
+    public Task<SessionsSession> GetSessionAsync(int playerId, int serverId, string ip) =>
         throw new NotImplementedException();
+
+    public Task InsertAliasAsync(int playerId, string name) => throw new NotImplementedException();
 
     public Task InsertMessageAsync(
-        long sessionId,
         int playerId,
+        long sessionId,
         short teamNum,
         bool teamChat,
         string message

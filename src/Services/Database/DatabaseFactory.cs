@@ -7,7 +7,7 @@ using Sessions.API.Models.Config;
 
 namespace Sessions.Services.Database;
 
-internal sealed class DatabaseFactory : IDatabaseFactory
+public sealed class DatabaseFactory : IDatabaseFactory
 {
     private readonly IServiceProvider _services;
     private readonly IOptionsMonitor<DatabaseConfig> _config;
@@ -37,11 +37,11 @@ internal sealed class DatabaseFactory : IDatabaseFactory
             "postgres" => (IDatabaseService)_services.GetRequiredService<IPostgresService>(),
             "mysql" => (IDatabaseService)_services.GetRequiredService<ISqlService>(),
             _ => throw _logService.LogCritical(
-                $"Database is not supported - {type} | Supported types: postgres, mysql",
+                $"Database is not supported - '{type}' | Supported types: postgres, mysql",
                 logger: _logger
             ),
         };
 
-        _logService.LogInformation($"DatabaseFactory initialized - {type}", logger: _logger);
+        _logService.LogInformation($"DatabaseFactory initialized - '{type}'", logger: _logger);
     }
 }

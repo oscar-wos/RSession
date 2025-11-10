@@ -1,14 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sessions.API.Contracts.Core;
-using Sessions.API.Contracts.Database;
 using Sessions.API.Contracts.Hook;
 using Sessions.API.Contracts.Log;
+using Sessions.API.Contracts.Schedule;
 using Sessions.API.Models.Config;
 using Sessions.Extensions;
 using Sessions.Services.Core;
 using Sessions.Services.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
+using SwiftlyS2.Shared.SteamAPI;
 using Tomlyn.Extensions.Configuration;
 
 namespace Sessions;
@@ -25,8 +26,9 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
     private IServiceProvider? _services;
 
     private IHookManager? _hookManager;
-    private IDatabaseService? _databaseService;
-    private ILogService? _logService;
+    private IScheduleManager? _scheduleManager;
+
+    private IServerService? _serverService;
 
     public override void ConfigureSharedInterface(IInterfaceManager interfaceManager)
     {
@@ -34,11 +36,22 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
 
         _ = services.AddSwiftly(Core);
 
-        _ = services.AddDatabase();
+        _ = services.AddDatabases();
         _ = services.AddHooks();
+        _ = services.AddSchedules();
 
         _ = services.AddSingleton<IPlayerService, PlayerService>();
+
+        _ = services.AddSingleton(provider => new Lazy<IPlayerService>(
+            provider.GetRequiredService<IPlayerService>
+        ));
+
         _ = services.AddSingleton<IServerService, ServerService>();
+
+        _ = services.AddSingleton(provider => new Lazy<IServerService>(
+            provider.GetRequiredService<IServerService>
+        ));
+
         _ = services.AddSingleton<ILogService, LogService>();
 
         _ = Core
@@ -52,17 +65,27 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
         _services = services.BuildServiceProvider();
 
         _hookManager = _services.GetRequiredService<IHookManager>();
-        _databaseService = _services.GetRequiredService<IDatabaseFactory>().Database;
+        _scheduleManager = _services.GetRequiredService<IScheduleManager>();
 
-        _logService = _services.GetRequiredService<ILogService>();
+        _serverService = _services.GetRequiredService<IServerService>();
+
+        interfaceManager.AddSharedInterface<IServiceProvider, IServiceProvider>(
+            "Sessions.ServiceProvider",
+            _services
+        );
     }
 
     public override void UseSharedInterface(IInterfaceManager interfaceManager)
     {
         _hookManager?.Init();
-        _databaseService?.StartAsync().GetAwaiter().GetResult();
+        _scheduleManager?.Init();
 
-        _logService?.LogInformation("Loaded", logger: Core.Logger);
+        try
+        {
+            InteropHelp.TestIfAvailableGameServer();
+            _serverService?.Init();
+        }
+        catch { }
     }
 
     public override void Load(bool hotReload) { }
