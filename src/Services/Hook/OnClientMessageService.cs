@@ -52,7 +52,7 @@ public sealed class OnClientMessageService(
         }
 
         _logService.LogDebug(
-            $"Message - {player.Controller.PlayerName}: {message} ({messageName}) | Num: {teamNum} | Team: {teamChat}",
+            $"Message - {player.Controller.PlayerName}: {message} ({messageName})",
             logger: _logger
         );
 

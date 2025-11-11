@@ -1,11 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using RSession.API.Contracts.Core;
+using RSession.API.Contracts.Event;
 using RSession.API.Contracts.Hook;
 using RSession.API.Contracts.Log;
 using RSession.API.Contracts.Schedule;
 using RSession.API.Models.Config;
 using RSession.Extensions;
 using RSession.Services.Core;
+using RSession.Services.Event;
 using RSession.Services.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
@@ -52,6 +54,7 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
             provider.GetRequiredService<IServerService>
         ));
 
+        _ = services.AddSingleton<IEventService, EventService>();
         _ = services.AddSingleton<ILogService, LogService>();
 
         _ = Core

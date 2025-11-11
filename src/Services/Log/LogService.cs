@@ -8,7 +8,7 @@ namespace RSession.Services.Log;
 
 public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
 {
-    private const string PLUGIN_NAME = "Sessions";
+    private const string PLUGIN_NAME = "RSession";
 
     private readonly Logger _logger = new(
         Path.Join(core.GameDirectory, "logs", $"{PLUGIN_NAME}"),

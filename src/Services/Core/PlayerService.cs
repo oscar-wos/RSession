@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using RSession.API.Contracts.Core;
 using RSession.API.Contracts.Database;
+using RSession.API.Contracts.Event;
 using RSession.API.Contracts.Log;
 using RSession.API.Structs;
 using SwiftlyS2.Shared.Misc;
@@ -12,6 +13,7 @@ public sealed class PlayerService(
     IDatabaseFactory databaseFactory,
     ILogService logService,
     ILogger<PlayerService> logger,
+    IEventService eventService,
     Lazy<IServerService> serverService
 ) : IPlayerService
 {
@@ -20,6 +22,7 @@ public sealed class PlayerService(
     private readonly ILogService _logService = logService;
     private readonly ILogger<PlayerService> _logger = logger;
 
+    private readonly IEventService _eventService = eventService;
     private readonly Lazy<IServerService> _serverService = serverService;
 
     private readonly Dictionary<ulong, SessionsPlayer> _players = [];
@@ -43,6 +46,8 @@ public sealed class PlayerService(
                     .ConfigureAwait(false);
 
                 _players[player.SteamID] = sessionsPlayer with { Session = sessionsSession };
+                _eventService.InvokePlayerAuthorized(player, _players[player.SteamID]);
+
                 _ = _lastAuthorizeAttempt.Remove(player.SteamID);
 
                 _logService.LogInformation(
