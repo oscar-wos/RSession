@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession", "src\RSession.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RLogger", "RLogger\src\RLogger.csproj", "{11395FA6-2403-93CF-31B6-DC4175D0A13D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession.API", "Sessions.API\RSession.API.csproj", "{640B8FD8-CEB4-A213-DA72-D43793BA463E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession.API", "RSession.API\RSession.API.csproj", "{640B8FD8-CEB4-A213-DA72-D43793BA463E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
