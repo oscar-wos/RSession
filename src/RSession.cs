@@ -1,27 +1,27 @@
 using Microsoft.Extensions.DependencyInjection;
-using Sessions.API.Contracts.Core;
-using Sessions.API.Contracts.Hook;
-using Sessions.API.Contracts.Log;
-using Sessions.API.Contracts.Schedule;
-using Sessions.API.Models.Config;
-using Sessions.Extensions;
-using Sessions.Services.Core;
-using Sessions.Services.Log;
+using RSession.API.Contracts.Core;
+using RSession.API.Contracts.Hook;
+using RSession.API.Contracts.Log;
+using RSession.API.Contracts.Schedule;
+using RSession.API.Models.Config;
+using RSession.Extensions;
+using RSession.Services.Core;
+using RSession.Services.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
 using SwiftlyS2.Shared.SteamAPI;
 using Tomlyn.Extensions.Configuration;
 
-namespace Sessions;
+namespace RSession;
 
 [PluginMetadata(
-    Id = "Sessions",
+    Id = "RSession",
     Version = "0.0.0",
-    Name = "Sessions",
-    Website = "https://github.com/oscar-wos/Sessions-swiftly",
+    Name = "RSession",
+    Website = "https://github.com/oscar-wos/RSession",
     Author = "oscar-wos"
 )]
-public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
+public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
 {
     private IServiceProvider? _services;
 
@@ -70,7 +70,7 @@ public sealed partial class Sessions(ISwiftlyCore core) : BasePlugin(core)
         _serverService = _services.GetRequiredService<IServerService>();
 
         interfaceManager.AddSharedInterface<IServiceProvider, IServiceProvider>(
-            "Sessions.ServiceProvider",
+            "RSession.ServiceProvider",
             _services
         );
     }

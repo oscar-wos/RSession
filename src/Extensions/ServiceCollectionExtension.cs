@@ -1,12 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
-using Sessions.API.Contracts.Database;
-using Sessions.API.Contracts.Hook;
-using Sessions.API.Contracts.Schedule;
-using Sessions.Services.Database;
-using Sessions.Services.Hook;
-using Sessions.Services.Schedule;
+using RSession.API.Contracts.Database;
+using RSession.API.Contracts.Hook;
+using RSession.API.Contracts.Schedule;
+using RSession.Services.Database;
+using RSession.Services.Hook;
+using RSession.Services.Schedule;
 
-namespace Sessions.Extensions;
+namespace RSession.Extensions;
 
 public static class ServiceCollectionExtension
 {

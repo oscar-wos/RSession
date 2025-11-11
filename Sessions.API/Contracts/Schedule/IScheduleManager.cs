@@ -1,4 +1,4 @@
-namespace Sessions.API.Contracts.Schedule;
+namespace RSession.API.Contracts.Schedule;
 
 public interface IScheduleManager
 {

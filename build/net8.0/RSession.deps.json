@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "Sessions/1.0.0": {
+      "RSession/1.0.0": {
         "dependencies": {
           "RLogger": "1.0.0",
-          "Sessions.API": "1.0.0",
+          "RSession.API": "1.0.0",
           "SwiftlyS2.CS2": "0.2.38",
           "Tomlyn.Extensions.Configuration": "1.0.6"
         },
         "runtime": {
-          "Sessions.dll": {}
+          "RSession.dll": {}
         }
       },
       "Microsoft.Extensions.Configuration.Abstractions/8.0.0": {
@@ -168,9 +168,9 @@
           }
         }
       },
-      "Sessions.API/1.0.0": {
+      "RSession.API/1.0.0": {
         "runtime": {
-          "Sessions.API.dll": {
+          "RSession.API.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
@@ -179,7 +179,7 @@
     }
   },
   "libraries": {
-    "Sessions/1.0.0": {
+    "RSession/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -287,7 +287,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Sessions.API/1.0.0": {
+    "RSession.API/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

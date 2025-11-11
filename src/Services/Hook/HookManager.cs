@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Hook;
-using Sessions.API.Contracts.Log;
+using RSession.API.Contracts.Hook;
+using RSession.API.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Misc;
 using SwiftlyS2.Shared.ProtobufDefinitions;
 
-namespace Sessions.Services.Hook;
+namespace RSession.Services.Hook;
 
 public sealed class HookManager(
     ISwiftlyCore core,

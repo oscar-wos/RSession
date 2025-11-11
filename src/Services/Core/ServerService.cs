@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Core;
-using Sessions.API.Contracts.Database;
-using Sessions.API.Contracts.Log;
-using Sessions.API.Structs;
+using RSession.API.Contracts.Core;
+using RSession.API.Contracts.Database;
+using RSession.API.Contracts.Log;
+using RSession.API.Structs;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Players;
 
-namespace Sessions.Services.Core;
+namespace RSession.Services.Core;
 
 public sealed class ServerService(
     ISwiftlyCore core,

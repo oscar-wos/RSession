@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Log;
-using Sessions.API.Contracts.Schedule;
+using RSession.API.Contracts.Log;
+using RSession.API.Contracts.Schedule;
 using SwiftlyS2.Shared;
 
-namespace Sessions.Services.Schedule;
+namespace RSession.Services.Schedule;
 
 public sealed class ScheduleManager(
     ISwiftlyCore core,

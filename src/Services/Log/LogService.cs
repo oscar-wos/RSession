@@ -1,10 +1,10 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using RLogger;
-using Sessions.API.Contracts.Log;
+using RSession.API.Contracts.Log;
 using SwiftlyS2.Shared;
 
-namespace Sessions.Services.Log;
+namespace RSession.Services.Log;
 
 public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
 {

@@ -1,6 +1,6 @@
-using Sessions.API.Structs;
+using RSession.API.Structs;
 
-namespace Sessions.API.Contracts.Database;
+namespace RSession.API.Contracts.Database;
 
 public interface IDatabaseService
 {

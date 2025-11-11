@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Core;
-using Sessions.API.Contracts.Hook;
-using Sessions.API.Contracts.Log;
+using RSession.API.Contracts.Core;
+using RSession.API.Contracts.Hook;
+using RSession.API.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Events;
 using SwiftlyS2.Shared.ProtobufDefinitions;
 
-namespace Sessions.Services.Hook;
+namespace RSession.Services.Hook;
 
 public sealed class OnClientDisconnectedService(
     ISwiftlyCore core,

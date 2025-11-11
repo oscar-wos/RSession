@@ -1,6 +1,6 @@
-using Sessions.API.Structs;
+using RSession.API.Structs;
 
-namespace Sessions.API.Contracts.Core;
+namespace RSession.API.Contracts.Core;
 
 public interface IServerService
 {

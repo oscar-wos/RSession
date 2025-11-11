@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.0.11201.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sessions", "src\Sessions.csproj", "{FF469060-2A5D-EE11-1870-AD6223F812B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession", "src\RSession.csproj", "{FF469060-2A5D-EE11-1870-AD6223F812B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RLogger", "RLogger\src\RLogger.csproj", "{11395FA6-2403-93CF-31B6-DC4175D0A13D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sessions.API", "Sessions.API\Sessions.API.csproj", "{640B8FD8-CEB4-A213-DA72-D43793BA463E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession.API", "Sessions.API\RSession.API.csproj", "{640B8FD8-CEB4-A213-DA72-D43793BA463E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

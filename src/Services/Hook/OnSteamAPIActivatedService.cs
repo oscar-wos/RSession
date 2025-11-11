@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Core;
-using Sessions.API.Contracts.Hook;
-using Sessions.API.Contracts.Log;
+using RSession.API.Contracts.Core;
+using RSession.API.Contracts.Hook;
+using RSession.API.Contracts.Log;
 
-namespace Sessions.Services.Hook;
+namespace RSession.Services.Hook;
 
 public sealed class OnSteamAPIActivatedService(
     ILogService logService,

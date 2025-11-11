@@ -1,5 +1,5 @@
-using Sessions.API.Contracts.Core;
+using RSession.API.Contracts.Core;
 
-namespace Sessions.Services.Core;
+namespace RSession.Services.Core;
 
 public sealed class MapService : IMapService { }

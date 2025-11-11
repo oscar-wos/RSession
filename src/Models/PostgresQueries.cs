@@ -1,7 +1,7 @@
-using Sessions.API.Contracts.Database;
-using Sessions.API.Models.Database;
+using RSession.API.Contracts.Database;
+using RSession.API.Models.Database;
 
-namespace Sessions.Models;
+namespace RSession.Models;
 
 public class PostgresQueries : LoadQueries, IDatabaseQueries
 {

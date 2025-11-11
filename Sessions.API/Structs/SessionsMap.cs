@@ -1,4 +1,4 @@
-namespace Sessions.API.Structs;
+namespace RSession.API.Structs;
 
 public readonly struct SessionsMap
 {

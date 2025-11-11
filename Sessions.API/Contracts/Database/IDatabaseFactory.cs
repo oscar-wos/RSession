@@ -1,4 +1,4 @@
-namespace Sessions.API.Contracts.Database;
+namespace RSession.API.Contracts.Database;
 
 public interface IDatabaseFactory
 {

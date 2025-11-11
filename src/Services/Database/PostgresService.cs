@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using Sessions.API.Contracts.Database;
-using Sessions.API.Contracts.Log;
-using Sessions.API.Models.Config;
-using Sessions.API.Structs;
-using Sessions.Models;
+using RSession.API.Contracts.Database;
+using RSession.API.Contracts.Log;
+using RSession.API.Models.Config;
+using RSession.API.Structs;
+using RSession.Models;
 
-namespace Sessions.Services.Database;
+namespace RSession.Services.Database;
 
 public sealed class PostgresService : IPostgresService, IDatabaseService, IDisposable
 {

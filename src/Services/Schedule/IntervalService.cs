@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
-using Sessions.API.Contracts.Core;
-using Sessions.API.Contracts.Database;
-using Sessions.API.Contracts.Log;
-using Sessions.API.Contracts.Schedule;
+using RSession.API.Contracts.Core;
+using RSession.API.Contracts.Database;
+using RSession.API.Contracts.Log;
+using RSession.API.Contracts.Schedule;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Players;
 
-namespace Sessions.Services.Schedule;
+namespace RSession.Services.Schedule;
 
 public sealed class IntervalService(
     ISwiftlyCore core,

@@ -1,11 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sessions.API.Contracts.Database;
-using Sessions.API.Contracts.Log;
-using Sessions.API.Models.Config;
+using RSession.API.Contracts.Database;
+using RSession.API.Contracts.Log;
+using RSession.API.Models.Config;
 
-namespace Sessions.Services.Database;
+namespace RSession.Services.Database;
 
 public sealed class DatabaseFactory : IDatabaseFactory
 {

@@ -1,4 +1,4 @@
-namespace Sessions.API.Contracts.Hook;
+namespace RSession.API.Contracts.Hook;
 
 public interface IHookManager
 {

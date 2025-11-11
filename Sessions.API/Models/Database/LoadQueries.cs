@@ -1,4 +1,4 @@
-namespace Sessions.API.Models.Database;
+namespace RSession.API.Models.Database;
 
 public abstract class LoadQueries
 {

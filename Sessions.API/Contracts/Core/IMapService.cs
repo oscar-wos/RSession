@@ -1,3 +1,3 @@
-namespace Sessions.API.Contracts.Core;
+namespace RSession.API.Contracts.Core;
 
 public interface IMapService { }
