@@ -1,10 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using RSession.API.Contracts.Database;
-using RSession.API.Contracts.Hook;
-using RSession.API.Contracts.Schedule;
+using RSession.API.Contracts.Event;
 using RSession.Services.Database;
-using RSession.Services.Hook;
-using RSession.Services.Schedule;
+using RSession.Services.Event;
 
 namespace RSession.Extensions;
 
@@ -19,22 +17,11 @@ public static class ServiceCollectionExtension
         return services;
     }
 
-    public static IServiceCollection AddHooks(this IServiceCollection services)
+    public static IServiceCollection AddEvents(this IServiceCollection services)
     {
-        _ = services.AddSingleton<IHookManager, HookManager>();
-        _ = services.AddSingleton<IOnClientDisconnectedService, OnClientDisconnectedService>();
-        _ = services.AddSingleton<IOnClientMessageService, OnClientMessageService>();
-        _ = services.AddSingleton<IOnClientSteamAuthorizeService, OnClientSteamAuthorizeService>();
-        _ = services.AddSingleton<IOnMapLoadService, OnMapLoadService>();
-        _ = services.AddSingleton<IOnSteamAPIActivatedService, OnSteamAPIActivatedService>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddSchedules(this IServiceCollection services)
-    {
-        _ = services.AddSingleton<IScheduleManager, ScheduleManager>();
-        _ = services.AddSingleton<IIntervalService, IntervalService>();
+        _ = services.AddSingleton<IEventListener, OnClientDisconnectedService>();
+        _ = services.AddSingleton<IEventListener, OnClientSteamAuthorizeService>();
+        _ = services.AddSingleton<IEventListener, OnSteamAPIActivatedService>();
 
         return services;
     }

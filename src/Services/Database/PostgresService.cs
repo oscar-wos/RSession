@@ -4,31 +4,30 @@ using Npgsql;
 using RSession.API.Contracts.Database;
 using RSession.API.Contracts.Log;
 using RSession.API.Models.Config;
-using RSession.API.Structs;
 using RSession.Models;
 
 namespace RSession.Services.Database;
 
-public sealed class PostgresService : IPostgresService, IDatabaseService, IDisposable
+public sealed class PostgresService : IPostgresService, IDatabaseService
 {
-    private readonly IOptionsMonitor<DatabaseConfig> _config;
-
     private readonly ILogService _logService;
     private readonly ILogger<PostgresService> _logger;
+
+    private readonly IOptionsMonitor<DatabaseConfig> _config;
 
     private readonly NpgsqlDataSource _dataSource;
     private readonly PostgresQueries _queries;
 
     public PostgresService(
-        IOptionsMonitor<DatabaseConfig> config,
         ILogService logService,
-        ILogger<PostgresService> logger
+        ILogger<PostgresService> logger,
+        IOptionsMonitor<DatabaseConfig> config
     )
     {
-        _config = config;
-
         _logService = logService;
         _logger = logger;
+
+        _config = config;
 
         string connectionString = BuildConnectionString(_config.CurrentValue.Connection);
         _dataSource = NpgsqlDataSource.Create(connectionString);
@@ -73,57 +72,7 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
         await transaction.CommitAsync().ConfigureAwait(false);
     }
 
-    public async Task<SessionsAlias?> GetAliasAsync(int playerId)
-    {
-        await using NpgsqlConnection connection = await _dataSource
-            .OpenConnectionAsync()
-            .ConfigureAwait(false);
-
-        await using NpgsqlCommand command = new(_queries.SelectAlias, connection);
-        _ = command.Parameters.AddWithValue("@playerId", playerId);
-
-        await using NpgsqlDataReader reader = await command
-            .ExecuteReaderAsync()
-            .ConfigureAwait(false);
-
-        if (await reader.ReadAsync().ConfigureAwait(false))
-        {
-            return new SessionsAlias() { Id = reader.GetInt64(0), Name = reader.GetString(1) };
-        }
-
-        return null;
-    }
-
-    public async Task<SessionsMap> GetMapAsync(string mapName)
-    {
-        await using NpgsqlConnection connection = await _dataSource
-            .OpenConnectionAsync()
-            .ConfigureAwait(false);
-
-        await using (NpgsqlCommand command = new(_queries.SelectMap, connection))
-        {
-            _ = command.Parameters.AddWithValue("@name", mapName);
-
-            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is short result)
-            {
-                return new SessionsMap() { Id = result };
-            }
-        }
-
-        await using (NpgsqlCommand command = new(_queries.InsertMap, connection))
-        {
-            _ = command.Parameters.AddWithValue("@name", mapName);
-
-            if (await command.ExecuteScalarAsync().ConfigureAwait(false) is not short result)
-            {
-                throw new Exception("Failed to insert map");
-            }
-
-            return new SessionsMap() { Id = result };
-        }
-    }
-
-    public async Task<SessionsPlayer> GetPlayerAsync(ulong steamId)
+    public async Task<int> GetPlayerAsync(ulong steamId)
     {
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync()
@@ -135,7 +84,7 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
 
             if (await command.ExecuteScalarAsync().ConfigureAwait(false) is int result)
             {
-                return new SessionsPlayer() { Id = result };
+                return result;
             }
         }
 
@@ -148,11 +97,11 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
                 throw new Exception("Failed to insert player");
             }
 
-            return new SessionsPlayer() { Id = result };
+            return result;
         }
     }
 
-    public async Task<SessionsServer> GetServerAsync(string ip, ushort port)
+    public async Task<short> GetServerAsync(string ip, ushort port)
     {
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync()
@@ -165,12 +114,7 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
 
             if (await command.ExecuteScalarAsync().ConfigureAwait(false) is short result)
             {
-                return new SessionsServer()
-                {
-                    Id = result,
-                    Ip = ip,
-                    Port = port,
-                };
+                return result;
             }
         }
 
@@ -184,16 +128,11 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
                 throw new Exception("Failed to insert server");
             }
 
-            return new SessionsServer()
-            {
-                Id = result,
-                Ip = ip,
-                Port = port,
-            };
+            return result;
         }
     }
 
-    public async Task<SessionsSession> GetSessionAsync(int playerId, short serverId, string ip)
+    public async Task<long> GetSessionAsync(int playerId, short serverId, string ip)
     {
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync()
@@ -210,58 +149,7 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
             throw new Exception("Failed to insert session");
         }
 
-        return new SessionsSession() { Id = result };
-    }
-
-    public async Task InsertAliasAsync(int playerId, string name)
-    {
-        await using NpgsqlConnection connection = await _dataSource
-            .OpenConnectionAsync()
-            .ConfigureAwait(false);
-
-        await using NpgsqlCommand command = new(_queries.InsertAlias, connection);
-
-        _ = command.Parameters.AddWithValue("@playerId", playerId);
-        _ = command.Parameters.AddWithValue("@name", name);
-
-        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
-    }
-
-    public async Task InsertMessageAsync(
-        int playerId,
-        long sessionId,
-        short teamNum,
-        bool teamChat,
-        string message
-    )
-    {
-        await using NpgsqlConnection connection = await _dataSource
-            .OpenConnectionAsync()
-            .ConfigureAwait(false);
-
-        await using NpgsqlCommand command = new(_queries.InsertMessage, connection);
-
-        _ = command.Parameters.AddWithValue("@playerId", playerId);
-        _ = command.Parameters.AddWithValue("@sessionId", sessionId);
-        _ = command.Parameters.AddWithValue("@teamNum", teamNum);
-        _ = command.Parameters.AddWithValue("@teamChat", teamChat);
-        _ = command.Parameters.AddWithValue("@message", message);
-
-        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
-    }
-
-    public async Task InsertRotationAsync(short serverId, short mapId)
-    {
-        await using NpgsqlConnection connection = await _dataSource
-            .OpenConnectionAsync()
-            .ConfigureAwait(false);
-
-        await using NpgsqlCommand command = new(_queries.InsertRotation, connection);
-
-        _ = command.Parameters.AddWithValue("@serverId", serverId);
-        _ = command.Parameters.AddWithValue("@mapId", mapId);
-
-        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        return result;
     }
 
     public async Task UpdateSessionsAsync(List<int> playerIds, List<long> sessionIds)
@@ -282,7 +170,4 @@ public sealed class PostgresService : IPostgresService, IDatabaseService, IDispo
             _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
-
-    public void Dispose() =>
-        _logService.LogInformation("Disposing PostgresService", logger: _logger);
 }

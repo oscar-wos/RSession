@@ -9,26 +9,26 @@ namespace RSession.Services.Database;
 
 public sealed class DatabaseFactory : IDatabaseFactory
 {
-    private readonly IServiceProvider _services;
-    private readonly IOptionsMonitor<DatabaseConfig> _config;
-
     private readonly ILogService _logService;
     private readonly ILogger<DatabaseFactory> _logger;
 
-    public IDatabaseService Database { get; }
+    private readonly IServiceProvider _services;
+    private readonly IOptionsMonitor<DatabaseConfig> _config;
+
+    public IDatabaseService Database { get; private set; }
 
     public DatabaseFactory(
-        IServiceProvider services,
-        IOptionsMonitor<DatabaseConfig> config,
         ILogService logService,
-        ILogger<DatabaseFactory> logger
+        ILogger<DatabaseFactory> logger,
+        IServiceProvider services,
+        IOptionsMonitor<DatabaseConfig> config
     )
     {
-        _services = services;
-        _config = config;
-
         _logService = logService;
         _logger = logger;
+
+        _services = services;
+        _config = config;
 
         string type = _config.CurrentValue.Type;
 
