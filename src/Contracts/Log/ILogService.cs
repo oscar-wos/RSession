@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
 
-namespace RSession.Shared.Contracts.Log;
+namespace RSession.Contracts.Log;
 
-public interface IRSessionLog
+internal interface ILogService
 {
     void LogDebug(string message, Exception? exception = null, ILogger? logger = null);
 

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using RSession.Contracts.Core;
 using RSession.Contracts.Database;
-using RSession.Shared.Contracts.Log;
+using RSession.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Players;
 
@@ -10,7 +10,7 @@ namespace RSession.Services.Core;
 internal sealed class PlayerService : IRSessionPlayerInternal, IDisposable
 {
     private readonly ISwiftlyCore _core;
-    private readonly IRSessionLog _logService;
+    private readonly ILogService _logService;
     private readonly ILogger<PlayerService> _logger;
 
     private readonly IDatabaseService _database;
@@ -21,7 +21,7 @@ internal sealed class PlayerService : IRSessionPlayerInternal, IDisposable
 
     public PlayerService(
         ISwiftlyCore core,
-        IRSessionLog logService,
+        ILogService logService,
         ILogger<PlayerService> logger,
         IDatabaseFactory databaseFactory,
         IRSessionEventInternal eventService

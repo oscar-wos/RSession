@@ -1,4 +1,4 @@
-using RSession.Shared.Contracts.Core;
+using RSession.Shared.Contracts;
 using SwiftlyS2.Shared.Players;
 
 namespace RSession.Contracts.Core;

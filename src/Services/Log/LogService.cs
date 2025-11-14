@@ -1,12 +1,12 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using RLogger;
-using RSession.Shared.Contracts.Log;
+using RSession.Contracts.Log;
 using SwiftlyS2.Shared;
 
 namespace RSession.Services.Log;
 
-public sealed class LogService(ISwiftlyCore core) : IRSessionLog, IDisposable
+public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
 {
     private const string PLUGIN_NAME = "RSession";
 

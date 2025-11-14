@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RSession.Contracts.Core;
 using RSession.Contracts.Database;
+using RSession.Contracts.Log;
 using RSession.Contracts.Schedule;
 using RSession.Models.Config;
-using RSession.Shared.Contracts.Core;
-using RSession.Shared.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Players;
 using Timer = System.Timers.Timer;
@@ -13,20 +13,20 @@ namespace RSession.Services.Schedule;
 
 internal sealed class IntervalService(
     ISwiftlyCore core,
-    IRSessionLog logService,
+    ILogService logService,
     ILogger<IntervalService> logger,
     IOptionsMonitor<SessionConfig> config,
     IDatabaseFactory databaseFactory,
-    IRSessionPlayer playerService
+    IRSessionPlayerInternal playerService
 ) : IInterval, IDisposable
 {
     private readonly ISwiftlyCore _core = core;
-    private readonly IRSessionLog _logService = logService;
+    private readonly ILogService _logService = logService;
     private readonly ILogger<IntervalService> _logger = logger;
     private readonly IOptionsMonitor<SessionConfig> _config = config;
 
     private readonly IDatabaseService _database = databaseFactory.Database;
-    private readonly IRSessionPlayer _playerService = playerService;
+    private readonly IRSessionPlayerInternal _playerService = playerService;
 
     private Timer? _timer;
 

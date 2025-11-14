@@ -1,15 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using RSession.Contracts.Core;
-using RSession.Contracts.Database;
 using RSession.Contracts.Event;
+using RSession.Contracts.Log;
 using RSession.Contracts.Schedule;
 using RSession.Extensions;
 using RSession.Models.Config;
 using RSession.Services.Core;
 using RSession.Services.Log;
 using RSession.Services.Schedule;
-using RSession.Shared.Contracts.Core;
-using RSession.Shared.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
 using SwiftlyS2.Shared.SteamAPI;
@@ -28,9 +26,6 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
 {
     private IServiceProvider? _serviceProvider;
 
-    private IRSessionServerInternal? _serverService;
-    private IInterval? _intervalService;
-
     public override void ConfigureSharedInterface(IInterfaceManager interfaceManager)
     {
         ServiceCollection services = new();
@@ -40,7 +35,7 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
         _ = services.AddDatabases();
         _ = services.AddEvents();
 
-        _ = services.AddSingleton<IRSessionLog, LogService>();
+        _ = services.AddSingleton<ILogService, LogService>();
 
         _ = services.AddSingleton<IRSessionEventInternal, EventService>();
         _ = services.AddSingleton<IRSessionPlayerInternal, PlayerService>();
@@ -53,14 +48,7 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
 
         _serviceProvider = services.BuildServiceProvider();
 
-        _serverService = _serviceProvider.GetRequiredService<IRSessionServerInternal>();
-        _intervalService = _serviceProvider.GetRequiredService<IInterval>();
-
-        interfaceManager.AddSharedInterface<IDatabaseService, IDatabaseService>(
-            "RSession.DatabaseService",
-            _serviceProvider.GetRequiredService<IDatabaseFactory>().Database
-        );
-
+        /*
         interfaceManager.AddSharedInterface<IRSessionEvent, IRSessionEvent>(
             "RSession.EventService",
             _serviceProvider.GetRequiredService<IRSessionEvent>()
@@ -73,8 +61,9 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
 
         interfaceManager.AddSharedInterface<IRSessionServer, IRSessionServer>(
             "RSession.ServerService",
-            _serverService
+            _serviceProvider.GetRequiredService<IRSessionServer>()
         );
+        */
     }
 
     public override void UseSharedInterface(IInterfaceManager interfaceManager)
@@ -84,12 +73,12 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
             listener.Subscribe();
         }
 
-        _intervalService?.Init();
+        _serviceProvider?.GetService<IInterval>()?.Init();
 
         try
         {
             InteropHelp.TestIfAvailableGameServer();
-            _serverService?.Init();
+            _serviceProvider?.GetService<IRSessionServerInternal>()?.Init();
         }
         catch { }
     }

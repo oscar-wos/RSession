@@ -1,4 +1,4 @@
-namespace RSession.Shared.Contracts.Core;
+namespace RSession.Shared.Contracts;
 
 public interface IRSessionServer
 {
