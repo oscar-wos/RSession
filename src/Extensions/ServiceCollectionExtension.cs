@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using RSession.API.Contracts.Database;
-using RSession.API.Contracts.Event;
+using RSession.Contracts.Database;
+using RSession.Contracts.Event;
 using RSession.Services.Database;
 using RSession.Services.Event;
 

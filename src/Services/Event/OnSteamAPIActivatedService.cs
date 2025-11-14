@@ -1,23 +1,23 @@
 using Microsoft.Extensions.Logging;
-using RSession.API.Contracts.Core;
-using RSession.API.Contracts.Event;
-using RSession.API.Contracts.Log;
+using RSession.Contracts.Event;
+using RSession.Shared.Contracts.Core;
+using RSession.Shared.Contracts.Log;
 using SwiftlyS2.Shared;
 
 namespace RSession.Services.Event;
 
 public sealed class OnSteamAPIActivatedService(
     ISwiftlyCore core,
-    ILogService logService,
+    IRSessionLog logService,
     ILogger<OnSteamAPIActivatedService> logger,
-    IServerService serverService
+    IRSessionServer serverService
 ) : IEventListener
 {
     private readonly ISwiftlyCore _core = core;
-    private readonly ILogService _logService = logService;
+    private readonly IRSessionLog _logService = logService;
     private readonly ILogger<OnSteamAPIActivatedService> _logger = logger;
 
-    private readonly IServerService _serverService = serverService;
+    private readonly IRSessionServer _serverService = serverService;
 
     public void Subscribe()
     {

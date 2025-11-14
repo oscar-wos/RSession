@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MySqlConnector;
-using RSession.API.Contracts.Database;
-using RSession.API.Contracts.Log;
-using RSession.API.Models.Config;
-using RSession.Models;
+using RSession.Contracts.Database;
+using RSession.Models.Config;
+using RSession.Models.Database;
+using RSession.Shared.Contracts.Log;
 
 namespace RSession.Services.Database;
 
 public sealed class SqlService : ISqlService, IDatabaseService
 {
-    private readonly ILogService _logService;
+    private readonly IRSessionLog _logService;
     private readonly ILogger<SqlService> _logger;
     private readonly IOptionsMonitor<DatabaseConfig> _config;
 
@@ -18,7 +18,7 @@ public sealed class SqlService : ISqlService, IDatabaseService
     private readonly SqlQueries _queries;
 
     public SqlService(
-        ILogService logService,
+        IRSessionLog logService,
         ILogger<SqlService> logger,
         IOptionsMonitor<DatabaseConfig> config
     )

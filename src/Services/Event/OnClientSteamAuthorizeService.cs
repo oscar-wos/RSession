@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
-using RSession.API.Contracts.Core;
-using RSession.API.Contracts.Event;
-using RSession.API.Contracts.Log;
+using RSession.Contracts.Event;
+using RSession.Shared.Contracts.Core;
+using RSession.Shared.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Events;
 
@@ -9,18 +9,18 @@ namespace RSession.Services.Event;
 
 public sealed class OnClientSteamAuthorizeService(
     ISwiftlyCore core,
-    ILogService logService,
+    IRSessionLog logService,
     ILogger<OnClientSteamAuthorizeService> logger,
-    IPlayerService playerService,
-    IServerService serverService
+    IRSessionPlayer playerService,
+    IRSessionServer serverService
 ) : IEventListener
 {
     private readonly ISwiftlyCore _core = core;
-    private readonly ILogService _logService = logService;
+    private readonly IRSessionLog _logService = logService;
     private readonly ILogger<OnClientSteamAuthorizeService> _logger = logger;
 
-    private readonly IPlayerService _playerService = playerService;
-    private readonly IServerService _serverService = serverService;
+    private readonly IRSessionPlayer _playerService = playerService;
+    private readonly IRSessionServer _serverService = serverService;
 
     public void Subscribe()
     {

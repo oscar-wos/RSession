@@ -1,15 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using RSession.API.Contracts.Database;
-using RSession.API.Contracts.Log;
-using RSession.API.Models.Config;
+using RSession.Contracts.Database;
+using RSession.Models.Config;
+using RSession.Shared.Contracts.Log;
 
 namespace RSession.Services.Database;
 
 public sealed class DatabaseFactory : IDatabaseFactory
 {
-    private readonly ILogService _logService;
+    private readonly IRSessionLog _logService;
     private readonly ILogger<DatabaseFactory> _logger;
     private readonly IOptionsMonitor<DatabaseConfig> _config;
 
@@ -18,7 +18,7 @@ public sealed class DatabaseFactory : IDatabaseFactory
     public IDatabaseService Database { get; private set; }
 
     public DatabaseFactory(
-        ILogService logService,
+        IRSessionLog logService,
         ILogger<DatabaseFactory> logger,
         IOptionsMonitor<DatabaseConfig> config,
         IServiceProvider serviceProvider

@@ -9,7 +9,7 @@
       "RSession/1.0.0": {
         "dependencies": {
           "RLogger": "1.0.0",
-          "RSession.API": "1.0.0"
+          "RSession.Shared": "1.0.0"
         },
         "runtime": {
           "RSession.dll": {}
@@ -89,9 +89,9 @@
           }
         }
       },
-      "RSession.API/1.0.0": {
+      "RSession.Shared/1.0.0": {
         "runtime": {
-          "RSession.API.dll": {
+          "RSession.Shared.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
@@ -152,7 +152,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "RSession.API/1.0.0": {
+    "RSession.Shared/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -1,14 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
-using RSession.API.Contracts.Core;
-using RSession.API.Contracts.Database;
-using RSession.API.Contracts.Event;
-using RSession.API.Contracts.Log;
-using RSession.API.Contracts.Schedule;
-using RSession.API.Models.Config;
+using RSession.Contracts.Database;
+using RSession.Contracts.Event;
+using RSession.Contracts.Schedule;
 using RSession.Extensions;
+using RSession.Models.Config;
 using RSession.Services.Core;
 using RSession.Services.Log;
 using RSession.Services.Schedule;
+using RSession.Shared.Contracts.Core;
+using RSession.Shared.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
 using SwiftlyS2.Shared.SteamAPI;
@@ -27,7 +27,7 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
 {
     private IServiceProvider? _serviceProvider;
 
-    private IServerService? _serverService;
+    private IRSessionServer? _serverService;
     private IIntervalService? _intervalService;
 
     public override void ConfigureSharedInterface(IInterfaceManager interfaceManager)
@@ -39,11 +39,11 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
         _ = services.AddDatabases();
         _ = services.AddEvents();
 
-        _ = services.AddSingleton<ILogService, LogService>();
-        _ = services.AddSingleton<IEventService, EventService>();
+        _ = services.AddSingleton<IRSessionLog, LogService>();
+        _ = services.AddSingleton<IRSessionEvent, EventService>();
 
-        _ = services.AddSingleton<IPlayerService, PlayerService>();
-        _ = services.AddSingleton<IServerService, ServerService>();
+        _ = services.AddSingleton<IRSessionPlayer, PlayerService>();
+        _ = services.AddSingleton<IRSessionServer, ServerService>();
 
         _ = services.AddSingleton<IIntervalService, IntervalService>();
 
@@ -52,7 +52,7 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
 
         _serviceProvider = services.BuildServiceProvider();
 
-        _serverService = _serviceProvider.GetRequiredService<IServerService>();
+        _serverService = _serviceProvider.GetRequiredService<IRSessionServer>();
         _intervalService = _serviceProvider.GetRequiredService<IIntervalService>();
 
         interfaceManager.AddSharedInterface<IDatabaseService, IDatabaseService>(
@@ -60,17 +60,17 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
             _serviceProvider.GetRequiredService<IDatabaseFactory>().Database
         );
 
-        interfaceManager.AddSharedInterface<IEventService, IEventService>(
+        interfaceManager.AddSharedInterface<IRSessionEvent, IRSessionEvent>(
             "RSession.EventService",
-            _serviceProvider.GetRequiredService<IEventService>()
+            _serviceProvider.GetRequiredService<IRSessionEvent>()
         );
 
-        interfaceManager.AddSharedInterface<IPlayerService, IPlayerService>(
+        interfaceManager.AddSharedInterface<IRSessionPlayer, IRSessionPlayer>(
             "RSession.PlayerService",
-            _serviceProvider.GetRequiredService<IPlayerService>()
+            _serviceProvider.GetRequiredService<IRSessionPlayer>()
         );
 
-        interfaceManager.AddSharedInterface<IServerService, IServerService>(
+        interfaceManager.AddSharedInterface<IRSessionServer, IRSessionServer>(
             "RSession.ServerService",
             _serverService
         );

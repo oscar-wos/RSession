@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using RSession.API.Contracts.Database;
-using RSession.API.Contracts.Log;
-using RSession.API.Models.Config;
-using RSession.Models;
+using RSession.Contracts.Database;
+using RSession.Models.Config;
+using RSession.Models.Database;
+using RSession.Shared.Contracts.Log;
 
 namespace RSession.Services.Database;
 
 public sealed class PostgresService : IPostgresService, IDatabaseService
 {
-    private readonly ILogService _logService;
+    private readonly IRSessionLog _logService;
     private readonly ILogger<PostgresService> _logger;
     private readonly IOptionsMonitor<DatabaseConfig> _config;
 
@@ -18,7 +18,7 @@ public sealed class PostgresService : IPostgresService, IDatabaseService
     private readonly PostgresQueries _queries;
 
     public PostgresService(
-        ILogService logService,
+        IRSessionLog logService,
         ILogger<PostgresService> logger,
         IOptionsMonitor<DatabaseConfig> config
     )

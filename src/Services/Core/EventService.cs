@@ -1,10 +1,10 @@
-using RSession.API.Contracts.Core;
-using RSession.API.Delegates;
+using RSession.Shared.Contracts.Core;
+using RSession.Shared.Delegates;
 using SwiftlyS2.Shared.Players;
 
 namespace RSession.Services.Core;
 
-public sealed class EventService : IEventService
+public sealed class EventService : IRSessionEvent
 {
     public event OnPlayerRegisteredDelegate? OnPlayerRegistered;
     public event OnServerRegisteredDelegate? OnServerRegistered;

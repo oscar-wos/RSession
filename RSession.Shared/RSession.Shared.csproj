@@ -6,14 +6,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    <AssemblyName>RSession</AssemblyName>
-    <OutputPath>$(MSBuildThisFileDirectory)../build/</OutputPath>
+    <AssemblyName>RSession.Shared</AssemblyName>
+    <OutputPath>$(MSBuildThisFileDirectory)../build/RSession.Shared/</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SwiftlyS2.CS2" Version="*" ExcludeAssets="runtime" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RLogger\src\RLogger.csproj" />
-    <ProjectReference Include="..\RSession.Shared\RSession.Shared.csproj" />
   </ItemGroup>
 </Project>
