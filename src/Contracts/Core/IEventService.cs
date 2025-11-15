@@ -1,0 +1,11 @@
+using RSession.Shared.Contracts;
+using RSession.Shared.Structs;
+using SwiftlyS2.Shared.Players;
+
+namespace RSession.Contracts.Core;
+
+internal interface IEventService : ISessionEventService
+{
+    void InvokePlayerRegistered(IPlayer player, in SessionPlayer sessionPlayer);
+    void InvokeServerRegistered(short serverId);
+}

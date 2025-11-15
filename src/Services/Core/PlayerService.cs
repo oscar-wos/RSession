@@ -2,29 +2,29 @@ using Microsoft.Extensions.Logging;
 using RSession.Contracts.Core;
 using RSession.Contracts.Database;
 using RSession.Contracts.Log;
+using RSession.Shared.Structs;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Players;
 
 namespace RSession.Services.Core;
 
-internal sealed class SessionPlayerService : IRSessionPlayerServiceInternal, IDisposable
+internal sealed class PlayerService : IPlayerService, IDisposable
 {
     private readonly ISwiftlyCore _core;
     private readonly ILogService _logService;
-    private readonly ILogger<SessionPlayerService> _logger;
+    private readonly ILogger<PlayerService> _logger;
 
     private readonly IDatabaseService _database;
-    private readonly IRSessionEventServiceInternal _sessionEventService;
+    private readonly IEventService _eventService;
 
-    private readonly Dictionary<ulong, int> _players = [];
-    private readonly Dictionary<ulong, long> _sessions = [];
+    private readonly Dictionary<ulong, SessionPlayer> _players = [];
 
-    public SessionPlayerService(
+    public PlayerService(
         ISwiftlyCore core,
         ILogService logService,
-        ILogger<SessionPlayerService> logger,
+        ILogger<PlayerService> logger,
         IDatabaseFactory databaseFactory,
-        IRSessionEventServiceInternal sessionEventService
+        IEventService eventService
     )
     {
         _core = core;
@@ -32,16 +32,15 @@ internal sealed class SessionPlayerService : IRSessionPlayerServiceInternal, IDi
         _logger = logger;
 
         _database = databaseFactory.Database;
-        _sessionEventService = sessionEventService;
+        _eventService = eventService;
 
-        _sessionEventService.OnServerRegistered += OnServerRegistered;
+        _eventService.OnServerRegistered += OnServerRegistered;
     }
 
-    public int? GetPlayerId(IPlayer player) =>
-        _players.TryGetValue(player.SteamID, out int playerId) ? playerId : null;
-
-    public long? GetSessionId(IPlayer player) =>
-        _sessions.TryGetValue(player.SteamID, out long sessionId) ? sessionId : null;
+    public SessionPlayer? GetPlayer(IPlayer player) =>
+        _players.TryGetValue(player.SteamID, out SessionPlayer sessionPlayer)
+            ? sessionPlayer
+            : null;
 
     public void HandlePlayerAuthorize(IPlayer player, short serverId) =>
         Task.Run(async () =>
@@ -61,10 +60,10 @@ internal sealed class SessionPlayerService : IRSessionPlayerServiceInternal, IDi
                     logger: _logger
                 );
 
-                _players[steamId] = playerId;
-                _sessions[steamId] = sessionId;
+                SessionPlayer sessionPlayer = new() { Id = playerId, Session = sessionId };
+                _players[steamId] = sessionPlayer;
 
-                _sessionEventService.InvokePlayerRegistered(player, playerId, sessionId);
+                _eventService.InvokePlayerRegistered(player, in sessionPlayer);
             }
             catch (Exception ex)
             {
@@ -78,7 +77,7 @@ internal sealed class SessionPlayerService : IRSessionPlayerServiceInternal, IDi
 
     public void HandlePlayerDisconnected(IPlayer player)
     {
-        if (GetPlayerId(player) is null)
+        if (GetPlayer(player) is null)
         {
             _logService.LogWarning(
                 $"Player not registered - {player.Controller.PlayerName} ({player.SteamID})",
@@ -89,14 +88,13 @@ internal sealed class SessionPlayerService : IRSessionPlayerServiceInternal, IDi
         }
 
         _ = _players.Remove(player.SteamID);
-        _ = _sessions.Remove(player.SteamID);
     }
 
     private void OnServerRegistered(short serverId)
     {
         foreach (IPlayer player in _core.PlayerManager.GetAllPlayers())
         {
-            if (player is not { IsValid: true, IsAuthorized: true })
+            if (player is not { IsAuthorized: true })
             {
                 continue;
             }
@@ -105,5 +103,5 @@ internal sealed class SessionPlayerService : IRSessionPlayerServiceInternal, IDi
         }
     }
 
-    public void Dispose() => _sessionEventService.OnServerRegistered -= OnServerRegistered;
+    public void Dispose() => _eventService.OnServerRegistered -= OnServerRegistered;
 }

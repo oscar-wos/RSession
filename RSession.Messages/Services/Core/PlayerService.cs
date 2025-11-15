@@ -4,29 +4,24 @@ using SwiftlyS2.Shared.Players;
 
 namespace RSession.Messages.Services.Core;
 
-internal sealed class PlayerService : IPlayerService
+internal sealed class PlayerService : Contracts.Core.IPlayerService
 {
-    private IRSessionPlayerService? _sessionPlayerService;
-    private IRSessionServerService? _sessionServerService;
+    private Shared.Contracts.ISessionPlayerService? _sessionPlayerService;
+    private ISessionServerService? _sessionServerService;
 
     public void Initialize(
-        IRSessionPlayerService sessionPlayerService,
-        IRSessionServerService sessionServerService
+        Shared.Contracts.ISessionPlayerService sessionPlayerService,
+        ISessionServerService sessionServerService
     )
     {
         _sessionPlayerService = sessionPlayerService;
         _sessionServerService = sessionServerService;
     }
 
-    public void HandlePlayerMessage(IPlayer player, short teamNum, bool teamChat, string message)
-    {
-        if (
-            _sessionPlayerService?.GetPlayerId(player) is not { } playerId
-            || _sessionPlayerService?.GetSessionId(player) is not { } sessionId
-            || _sessionServerService?.GetServerId() is not { } serverId
-        )
-        {
-            return;
-        }
-    }
+    public void HandlePlayerMessage(
+        IPlayer player,
+        short teamNum,
+        bool teamChat,
+        string message
+    ) { }
 }

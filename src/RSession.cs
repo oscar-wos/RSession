@@ -31,34 +31,24 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
             return;
         }
 
-        interfaceManager.AddSharedInterface<IRSessionEventService, SessionEventService>(
+        interfaceManager.AddSharedInterface<ISessionEventService, EventService>(
             "RSession.EventService",
-            _serviceProvider.GetRequiredService<SessionEventService>()
-        );
-
-        interfaceManager.AddSharedInterface<IRSessionPlayerService, SessionPlayerService>(
-            "RSession.PlayerService",
-            _serviceProvider.GetRequiredService<SessionPlayerService>()
-        );
-
-        interfaceManager.AddSharedInterface<IRSessionServerService, SessionServerService>(
-            "RSession.ServerService",
-            _serviceProvider.GetRequiredService<SessionServerService>()
+            _serviceProvider.GetRequiredService<EventService>()
         );
     }
 
     public override void Load(bool hotReload)
     {
         _ = Core
-            .Configuration.InitializeTomlWithModel<DatabaseConfig>("database.toml", "database")
-            .Configure(builder =>
-                builder.AddTomlFile("database.toml", optional: false, reloadOnChange: true)
-            );
-
-        _ = Core
             .Configuration.InitializeTomlWithModel<SessionConfig>("config.toml", "config")
             .Configure(builder =>
                 builder.AddTomlFile("config.toml", optional: false, reloadOnChange: true)
+            );
+
+        _ = Core
+            .Configuration.InitializeTomlWithModel<DatabaseConfig>("database.toml", "database")
+            .Configure(builder =>
+                builder.AddTomlFile("database.toml", optional: false, reloadOnChange: true)
             );
 
         ServiceCollection services = new();
@@ -77,12 +67,12 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
             listener.Subscribe();
         }
 
-        _serviceProvider.GetService<IInterval>()?.Initialize();
+        _serviceProvider.GetService<IIntervalService>()?.Initialize();
 
         try
         {
             InteropHelp.TestIfAvailableGameServer();
-            _serviceProvider.GetService<IRSessionServerServiceInternal>()?.Initialize();
+            _serviceProvider.GetService<IServerService>()?.Initialize();
         }
         catch { }
     }

@@ -6,8 +6,8 @@ namespace RSession.Messages.Contracts.Core;
 internal interface IPlayerService
 {
     void Initialize(
-        IRSessionPlayerService sessionPlayerService,
-        IRSessionServerService sessionServerService
+        Shared.Contracts.ISessionPlayerService sessionPlayerService,
+        ISessionServerService sessionServerService
     );
     void HandlePlayerMessage(IPlayer player, short teamNum, bool teamChat, string message);
 }

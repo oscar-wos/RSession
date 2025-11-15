@@ -10,14 +10,14 @@ internal sealed class OnSteamAPIActivatedService(
     ISwiftlyCore core,
     ILogService logService,
     ILogger<OnSteamAPIActivatedService> logger,
-    IRSessionServerServiceInternal sessionServerService
+    IServerService serverService
 ) : IEventListener
 {
     private readonly ISwiftlyCore _core = core;
     private readonly ILogService _logService = logService;
     private readonly ILogger<OnSteamAPIActivatedService> _logger = logger;
 
-    private readonly IRSessionServerServiceInternal _sessionServerService = sessionServerService;
+    private readonly IServerService _serverService = serverService;
 
     public void Subscribe()
     {
@@ -34,6 +34,6 @@ internal sealed class OnSteamAPIActivatedService(
     private void OnSteamAPIActivated()
     {
         _logService.LogDebug($"SteamAPI activated", logger: _logger);
-        _sessionServerService.Initialize();
+        _serverService.Initialize();
     }
 }

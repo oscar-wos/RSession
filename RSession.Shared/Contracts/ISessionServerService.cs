@@ -1,6 +1,6 @@
 namespace RSession.Shared.Contracts;
 
-public interface IRSessionServerService
+public interface ISessionServerService
 {
     short? GetServerId();
 }

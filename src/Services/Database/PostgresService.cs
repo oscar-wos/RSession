@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql;
@@ -8,7 +9,7 @@ using RSession.Models.Database;
 
 namespace RSession.Services.Database;
 
-internal sealed class PostgresService : IPostgresService, IDatabaseService
+internal sealed class PostgresService : IPostgresService
 {
     private readonly ILogService _logService;
     private readonly ILogger<PostgresService> _logger;
@@ -31,24 +32,6 @@ internal sealed class PostgresService : IPostgresService, IDatabaseService
         _dataSource = NpgsqlDataSource.Create(connectionString);
 
         _queries = new PostgresQueries();
-    }
-
-    private string BuildConnectionString(ConnectionConfig config)
-    {
-        NpgsqlConnectionStringBuilder builder = new()
-        {
-            Host = config.Host,
-            Port = config.Port,
-            Username = config.Username,
-            Password = config.Password,
-            Database = config.Database,
-            Pooling = true,
-        };
-
-        string connectionString = builder.ConnectionString;
-        _logService.LogDebug(connectionString, logger: _logger);
-
-        return builder.ConnectionString;
     }
 
     public async Task InitAsync()
@@ -167,5 +150,23 @@ internal sealed class PostgresService : IPostgresService, IDatabaseService
             _ = command.Parameters.AddWithValue("@sessionIds", sessionIds);
             _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
+    }
+
+    private string BuildConnectionString(ConnectionConfig config)
+    {
+        NpgsqlConnectionStringBuilder builder = new()
+        {
+            Host = config.Host,
+            Port = config.Port,
+            Username = config.Username,
+            Password = config.Password,
+            Database = config.Database,
+            Pooling = true,
+        };
+
+        string connectionString = builder.ConnectionString;
+        _logService.LogDebug(connectionString, logger: _logger);
+
+        return builder.ConnectionString;
     }
 }

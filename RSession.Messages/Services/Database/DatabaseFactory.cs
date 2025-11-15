@@ -1,41 +1,38 @@
-using Microsoft.Extensions.DependencyInjection;
+/*using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using RSession.Contracts.Database;
-using RSession.Contracts.Log;
-using RSession.Models.Config;
+using RSession.Messages.Contracts.Log;
 
-namespace RSession.Services.Database;
+namespace RSession.Messages.Services.Database;
 
-internal sealed class DatabaseFactory : IDatabaseFactory
+internal sealed class DatabaseFactory
 {
     private readonly ILogService _logService;
     private readonly ILogger<DatabaseFactory> _logger;
-    private readonly IOptionsMonitor<DatabaseConfig> _config;
+    private readonly IDatabaseService _database;
 
     private readonly IServiceProvider _serviceProvider;
 
-    public IDatabaseService Database { get; private set; }
+    public object DatabaseService { get; private set; }
 
     public DatabaseFactory(
         ILogService logService,
         ILogger<DatabaseFactory> logger,
-        IOptionsMonitor<DatabaseConfig> config,
+        IRSessionDatabaseService database,
         IServiceProvider serviceProvider
     )
     {
         _logService = logService;
         _logger = logger;
-        _config = config;
-
+        _database = database;
         _serviceProvider = serviceProvider;
 
-        string type = _config.CurrentValue.Type;
+        string type = _database.Type;
 
-        Database = type.ToLowerInvariant() switch
+        DatabaseService = type.ToLowerInvariant() switch
         {
-            "postgres" => _serviceProvider.GetRequiredService<IPostgresService>(),
-            "mysql" => _serviceProvider.GetRequiredService<ISqlService>(),
+            "postgres" => _serviceProvider.GetRequiredService<PostgresService>(),
+            "mysql" => _serviceProvider.GetRequiredService<SqlService>(),
             _ => throw _logService.LogCritical(
                 $"Database is not supported - '{type}' | Supported types: postgres, mysql",
                 logger: _logger
@@ -45,3 +42,4 @@ internal sealed class DatabaseFactory : IDatabaseFactory
         _logService.LogInformation($"DatabaseFactory initialized - '{type}'", logger: _logger);
     }
 }
+*/

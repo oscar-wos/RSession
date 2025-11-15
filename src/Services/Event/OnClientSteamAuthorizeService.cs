@@ -11,16 +11,16 @@ internal sealed class OnClientSteamAuthorizeService(
     ISwiftlyCore core,
     ILogService logService,
     ILogger<OnClientSteamAuthorizeService> logger,
-    IRSessionPlayerServiceInternal sessionPlayerService,
-    IRSessionServerServiceInternal sessionServerService
+    IPlayerService playerService,
+    IServerService serverService
 ) : IEventListener
 {
     private readonly ISwiftlyCore _core = core;
     private readonly ILogService _logService = logService;
     private readonly ILogger<OnClientSteamAuthorizeService> _logger = logger;
 
-    private readonly IRSessionPlayerServiceInternal _sessionPlayerService = sessionPlayerService;
-    private readonly IRSessionServerServiceInternal _sessionServerService = sessionServerService;
+    private readonly IPlayerService _playerService = playerService;
+    private readonly IServerService _serverService = serverService;
 
     public void Subscribe()
     {
@@ -48,7 +48,7 @@ internal sealed class OnClientSteamAuthorizeService(
             return;
         }
 
-        if (_sessionServerService.GetServerId() is not { } serverId)
+        if (_serverService.GetServerId() is not { } serverId)
         {
             return;
         }
@@ -58,6 +58,6 @@ internal sealed class OnClientSteamAuthorizeService(
             logger: _logger
         );
 
-        _sessionPlayerService.HandlePlayerAuthorize(player, serverId);
+        _playerService.HandlePlayerAuthorize(player, serverId);
     }
 }
