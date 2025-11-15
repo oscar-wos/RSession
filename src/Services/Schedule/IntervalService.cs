@@ -17,7 +17,7 @@ internal sealed class IntervalService(
     ILogger<IntervalService> logger,
     IOptionsMonitor<SessionConfig> config,
     IDatabaseFactory databaseFactory,
-    IRSessionPlayerInternal playerService
+    IRSessionPlayerServiceInternal sessionPlayerService
 ) : IInterval, IDisposable
 {
     private readonly ISwiftlyCore _core = core;
@@ -26,7 +26,7 @@ internal sealed class IntervalService(
     private readonly IOptionsMonitor<SessionConfig> _config = config;
 
     private readonly IDatabaseService _database = databaseFactory.Database;
-    private readonly IRSessionPlayerInternal _playerService = playerService;
+    private readonly IRSessionPlayerServiceInternal _sessionPlayerService = sessionPlayerService;
 
     private Timer? _timer;
 
@@ -49,12 +49,12 @@ internal sealed class IntervalService(
 
         foreach (IPlayer player in _core.PlayerManager.GetAllPlayers())
         {
-            if (_playerService.GetPlayerId(player) is { } playerId)
+            if (_sessionPlayerService.GetPlayerId(player) is { } playerId)
             {
                 playerIds.Add(playerId);
             }
 
-            if (_playerService.GetSessionId(player) is { } sessionId)
+            if (_sessionPlayerService.GetSessionId(player) is { } sessionId)
             {
                 sessionIds.Add(sessionId);
             }

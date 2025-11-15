@@ -6,10 +6,13 @@ namespace RSession.Messages.Services.Core;
 
 internal sealed class PlayerService : IPlayerService
 {
-    private IRSessionPlayer? _sessionPlayer;
-    private IRSessionServer? _sessionServer;
+    private IRSessionPlayerService? _sessionPlayer;
+    private IRSessionServerService? _sessionServer;
 
-    public void Initialize(IRSessionPlayer sessionPlayer, IRSessionServer sessionServer)
+    public void Initialize(
+        IRSessionPlayerService sessionPlayer,
+        IRSessionServerService sessionServer
+    )
     {
         _sessionPlayer = sessionPlayer;
         _sessionServer = sessionServer;

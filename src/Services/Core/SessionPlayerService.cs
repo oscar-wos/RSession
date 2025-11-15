@@ -7,24 +7,24 @@ using SwiftlyS2.Shared.Players;
 
 namespace RSession.Services.Core;
 
-internal sealed class PlayerService : IRSessionPlayerInternal, IDisposable
+internal sealed class SessionPlayerService : IRSessionPlayerServiceInternal, IDisposable
 {
     private readonly ISwiftlyCore _core;
     private readonly ILogService _logService;
-    private readonly ILogger<PlayerService> _logger;
+    private readonly ILogger<SessionPlayerService> _logger;
 
     private readonly IDatabaseService _database;
-    private readonly IRSessionEventInternal _eventService;
+    private readonly IRSessionEventServiceInternal _sessionEventService;
 
     private readonly Dictionary<ulong, int> _players = [];
     private readonly Dictionary<ulong, long> _sessions = [];
 
-    public PlayerService(
+    public SessionPlayerService(
         ISwiftlyCore core,
         ILogService logService,
-        ILogger<PlayerService> logger,
+        ILogger<SessionPlayerService> logger,
         IDatabaseFactory databaseFactory,
-        IRSessionEventInternal eventService
+        IRSessionEventServiceInternal sessionEventService
     )
     {
         _core = core;
@@ -32,9 +32,9 @@ internal sealed class PlayerService : IRSessionPlayerInternal, IDisposable
         _logger = logger;
 
         _database = databaseFactory.Database;
-        _eventService = eventService;
+        _sessionEventService = sessionEventService;
 
-        _eventService.OnServerRegistered += OnServerRegistered;
+        _sessionEventService.OnServerRegistered += OnServerRegistered;
     }
 
     public int? GetPlayerId(IPlayer player) =>
@@ -64,7 +64,7 @@ internal sealed class PlayerService : IRSessionPlayerInternal, IDisposable
                 _players[steamId] = playerId;
                 _sessions[steamId] = sessionId;
 
-                _eventService.InvokePlayerRegistered(player, playerId, sessionId);
+                _sessionEventService.InvokePlayerRegistered(player, playerId, sessionId);
             }
             catch (Exception ex)
             {
@@ -105,5 +105,5 @@ internal sealed class PlayerService : IRSessionPlayerInternal, IDisposable
         }
     }
 
-    public void Dispose() => _eventService.OnServerRegistered -= OnServerRegistered;
+    public void Dispose() => _sessionEventService.OnServerRegistered -= OnServerRegistered;
 }

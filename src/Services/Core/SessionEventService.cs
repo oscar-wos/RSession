@@ -4,7 +4,7 @@ using SwiftlyS2.Shared.Players;
 
 namespace RSession.Services.Core;
 
-internal sealed class EventService : IRSessionEventInternal
+internal sealed class SessionEventService : IRSessionEventServiceInternal
 {
     public event OnPlayerRegisteredDelegate? OnPlayerRegistered;
     public event OnServerRegisteredDelegate? OnServerRegistered;

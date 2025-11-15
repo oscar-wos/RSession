@@ -44,35 +44,37 @@ public static class ServiceCollectionExtension
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        _ = services.AddSingleton<EventService>();
-        _ = services.AddSingleton<PlayerService>();
-        _ = services.AddSingleton<ServerService>();
-
         _ = services.AddSingleton<ILogService, LogService>();
         _ = services.AddSingleton<IInterval, IntervalService>();
 
-        _ = services.AddSingleton<IRSessionEventInternal>(serviceProvider =>
-            serviceProvider.GetRequiredService<EventService>()
+        _ = services.AddSingleton<SessionEventService>();
+
+        _ = services.AddSingleton<IRSessionEventServiceInternal, SessionEventService>(
+            serviceProvider => serviceProvider.GetRequiredService<SessionEventService>()
         );
 
-        _ = services.AddSingleton<IRSessionEvent>(serviceProvider =>
-            serviceProvider.GetRequiredService<EventService>()
+        _ = services.AddSingleton<IRSessionEventService, SessionEventService>(serviceProvider =>
+            serviceProvider.GetRequiredService<SessionEventService>()
         );
 
-        _ = services.AddSingleton<IRSessionPlayerInternal>(serviceProvider =>
-            serviceProvider.GetRequiredService<PlayerService>()
+        _ = services.AddSingleton<SessionPlayerService>();
+
+        _ = services.AddSingleton<IRSessionPlayerServiceInternal, SessionPlayerService>(
+            serviceProvider => serviceProvider.GetRequiredService<SessionPlayerService>()
         );
 
-        _ = services.AddSingleton<IRSessionPlayer>(serviceProvider =>
-            serviceProvider.GetRequiredService<PlayerService>()
+        _ = services.AddSingleton<IRSessionPlayerService, SessionPlayerService>(serviceProvider =>
+            serviceProvider.GetRequiredService<SessionPlayerService>()
         );
 
-        _ = services.AddSingleton<IRSessionServerInternal>(serviceProvider =>
-            serviceProvider.GetRequiredService<ServerService>()
+        _ = services.AddSingleton<SessionServerService>();
+
+        _ = services.AddSingleton<IRSessionServerServiceInternal, SessionServerService>(
+            serviceProvider => serviceProvider.GetRequiredService<SessionServerService>()
         );
 
-        _ = services.AddSingleton<IRSessionServer>(serviceProvider =>
-            serviceProvider.GetRequiredService<ServerService>()
+        _ = services.AddSingleton<IRSessionServerService, SessionServerService>(serviceProvider =>
+            serviceProvider.GetRequiredService<SessionServerService>()
         );
 
         return services;

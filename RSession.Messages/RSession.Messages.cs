@@ -31,13 +31,11 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
             return;
         }
 
-        IRSessionPlayer sessionPlayer = interfaceManager.GetSharedInterface<IRSessionPlayer>(
-            "RSession.Player"
-        );
+        IRSessionPlayerService sessionPlayer =
+            interfaceManager.GetSharedInterface<IRSessionPlayerService>("RSession.Player");
 
-        IRSessionServer sessionServer = interfaceManager.GetSharedInterface<IRSessionServer>(
-            "RSession.Server"
-        );
+        IRSessionServerService sessionServer =
+            interfaceManager.GetSharedInterface<IRSessionServerService>("RSession.Server");
 
         _serviceProvider
             ?.GetRequiredService<IPlayerService>()

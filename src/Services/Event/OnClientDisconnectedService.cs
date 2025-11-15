@@ -12,14 +12,14 @@ internal sealed class OnClientDisconnectedService(
     ISwiftlyCore core,
     ILogService logService,
     ILogger<OnClientDisconnectedService> logger,
-    IRSessionPlayerInternal playerService
+    IRSessionPlayerServiceInternal sessionPlayerService
 ) : IEventListener
 {
     private readonly ISwiftlyCore _core = core;
     private readonly ILogService _logService = logService;
     private readonly ILogger<OnClientDisconnectedService> _logger = logger;
 
-    private readonly IRSessionPlayerInternal _playerService = playerService;
+    private readonly IRSessionPlayerServiceInternal _sessionPlayerService = sessionPlayerService;
 
     public void Subscribe()
     {
@@ -57,6 +57,6 @@ internal sealed class OnClientDisconnectedService(
             logger: _logger
         );
 
-        _playerService.HandlePlayerDisconnected(player);
+        _sessionPlayerService.HandlePlayerDisconnected(player);
     }
 }

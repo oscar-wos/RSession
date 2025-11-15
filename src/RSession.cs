@@ -31,19 +31,19 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
             return;
         }
 
-        interfaceManager.AddSharedInterface<IRSessionEvent, EventService>(
-            "RSession.Event",
-            _serviceProvider.GetRequiredService<EventService>()
+        interfaceManager.AddSharedInterface<IRSessionEventService, SessionEventService>(
+            "RSession.EventService",
+            _serviceProvider.GetRequiredService<SessionEventService>()
         );
 
-        interfaceManager.AddSharedInterface<IRSessionPlayer, PlayerService>(
-            "RSession.Player",
-            _serviceProvider.GetRequiredService<PlayerService>()
+        interfaceManager.AddSharedInterface<IRSessionPlayerService, SessionPlayerService>(
+            "RSession.PlayerService",
+            _serviceProvider.GetRequiredService<SessionPlayerService>()
         );
 
-        interfaceManager.AddSharedInterface<IRSessionServer, ServerService>(
-            "RSession.Server",
-            _serviceProvider.GetRequiredService<ServerService>()
+        interfaceManager.AddSharedInterface<IRSessionServerService, SessionServerService>(
+            "RSession.ServerService",
+            _serviceProvider.GetRequiredService<SessionServerService>()
         );
     }
 
@@ -82,7 +82,7 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
         try
         {
             InteropHelp.TestIfAvailableGameServer();
-            _serviceProvider.GetService<IRSessionServerInternal>()?.Initialize();
+            _serviceProvider.GetService<IRSessionServerServiceInternal>()?.Initialize();
         }
         catch { }
     }

@@ -6,20 +6,20 @@ using SwiftlyS2.Shared;
 
 namespace RSession.Services.Core;
 
-internal sealed class ServerService(
+internal sealed class SessionServerService(
     ISwiftlyCore core,
     ILogService logService,
-    ILogger<ServerService> logger,
+    ILogger<SessionServerService> logger,
     IDatabaseFactory databaseFactory,
-    IRSessionEventInternal eventService
-) : IRSessionServerInternal
+    IRSessionEventServiceInternal sessionEventService
+) : IRSessionServerServiceInternal
 {
     private readonly ISwiftlyCore _core = core;
     private readonly ILogService _logService = logService;
-    private readonly ILogger<ServerService> _logger = logger;
+    private readonly ILogger<SessionServerService> _logger = logger;
 
     private readonly IDatabaseService _database = databaseFactory.Database;
-    private readonly IRSessionEventInternal _eventService = eventService;
+    private readonly IRSessionEventServiceInternal _sessionEventService = sessionEventService;
 
     private short? _id;
 
@@ -43,7 +43,7 @@ internal sealed class ServerService(
 
                 _id = serverId;
 
-                _eventService.InvokeServerRegistered(serverId);
+                _sessionEventService.InvokeServerRegistered(serverId);
             }
             catch (Exception ex)
             {

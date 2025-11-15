@@ -3,7 +3,7 @@ using SwiftlyS2.Shared.Players;
 
 namespace RSession.Contracts.Core;
 
-internal interface IRSessionPlayerInternal : IRSessionPlayer
+internal interface IRSessionPlayerServiceInternal : IRSessionPlayerService
 {
     void HandlePlayerAuthorize(IPlayer player, short serverId);
     void HandlePlayerDisconnected(IPlayer player);

@@ -6,7 +6,7 @@ using SwiftlyS2.Shared;
 
 namespace RSession.Messages.Services.Log;
 
-public sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
+internal sealed class LogService(ISwiftlyCore core) : ILogService, IDisposable
 {
     private const string PLUGIN_NAME = "RSession.Messages";
 
