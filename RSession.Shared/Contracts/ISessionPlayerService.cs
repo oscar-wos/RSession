@@ -5,5 +5,5 @@ namespace RSession.Shared.Contracts;
 
 public interface ISessionPlayerService
 {
-    SessionPlayer? GetPlayer(IPlayer player);
+    SessionPlayer? GetSessionPlayer(IPlayer player);
 }

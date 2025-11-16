@@ -18,7 +18,7 @@ internal sealed class ServerService(
     private readonly ILogService _logService = logService;
     private readonly ILogger<ServerService> _logger = logger;
 
-    private readonly IDatabaseService _database = databaseFactory.Database;
+    private readonly IDatabaseService _databaseService = databaseFactory.GetDatabaseService();
     private readonly IEventService _eventService = eventService;
 
     private short? _id;
@@ -33,8 +33,11 @@ internal sealed class ServerService(
 
             try
             {
-                await _database.InitAsync().ConfigureAwait(false);
-                short serverId = await _database.GetServerAsync(ip, port).ConfigureAwait(false);
+                await _databaseService.InitAsync().ConfigureAwait(false);
+
+                short serverId = await _databaseService
+                    .GetServerAsync(ip, port)
+                    .ConfigureAwait(false);
 
                 _logService.LogInformation(
                     $"Server registered - {ip}:{port} | Server ID: {serverId}",

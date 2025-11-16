@@ -9,7 +9,7 @@ using RSession.Models.Database;
 
 namespace RSession.Services.Database;
 
-internal sealed class PostgresService : IPostgresService
+internal sealed class PostgresService : IDatabaseService
 {
     private readonly ILogService _logService;
     private readonly ILogger<PostgresService> _logger;
@@ -33,6 +33,9 @@ internal sealed class PostgresService : IPostgresService
 
         _queries = new PostgresQueries();
     }
+
+    public async Task<DbConnection> GetConnectionAsync() =>
+        await _dataSource.OpenConnectionAsync().ConfigureAwait(false);
 
     public async Task InitAsync()
     {

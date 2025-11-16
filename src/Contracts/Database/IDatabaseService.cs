@@ -1,6 +1,8 @@
+using RSession.Shared.Contracts;
+
 namespace RSession.Contracts.Database;
 
-internal interface IDatabaseService
+internal interface IDatabaseService : ISessionDatabaseService
 {
     Task InitAsync();
     Task<int> GetPlayerAsync(ulong steamId);

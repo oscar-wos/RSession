@@ -1,10 +1,8 @@
-/*using Microsoft.Extensions.DependencyInjection;
-using RSession.Messages.Contracts.Core;
+using Microsoft.Extensions.DependencyInjection;
 using RSession.Messages.Contracts.Hook;
-using RSession.Messages.Contracts.Log;
+using RSession.Messages.Extensions;
 using RSession.Messages.Services.Core;
-using RSession.Messages.Services.Database;
-using RSession.Messages.Services.Log;
+using RSession.Messages.Services.Event;
 using RSession.Shared.Contracts;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Plugins;
@@ -24,37 +22,31 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
 
     public override void UseSharedInterface(IInterfaceManager interfaceManager)
     {
-        if (
-            !interfaceManager.HasSharedInterface("RSession.Database")
-            || !interfaceManager.HasSharedInterface("RSession.Event")
-            || !interfaceManager.HasSharedInterface("RSession.Player")
-            || !interfaceManager.HasSharedInterface("RSession.Server")
-        )
+        if (interfaceManager.HasSharedInterface("RSession.EventService"))
         {
-            return;
+            ISessionEventService eventService =
+                interfaceManager.GetSharedInterface<ISessionEventService>("RSession.EventService");
+
+            _serviceProvider?.GetService<OnDatabaseConfiguredService>()?.Initialize(eventService);
         }
 
-        IRSessionDatabaseService sessionDatabase =
-            interfaceManager.GetSharedInterface<IRSessionDatabaseService>(
-                "RSession.DatabaseService"
-            );
+        if (
+            interfaceManager.HasSharedInterface("RSession.PlayerService")
+            && interfaceManager.HasSharedInterface("RSession.ServerService")
+        )
+        {
+            ISessionPlayerService playerService =
+                interfaceManager.GetSharedInterface<ISessionPlayerService>(
+                    "RSession.PlayerService"
+                );
 
-        ISessionEventService sessionEvent =
-            interfaceManager.GetSharedInterface<ISessionEventService>("RSession.EventService");
+            ISessionServerService serverService =
+                interfaceManager.GetSharedInterface<ISessionServerService>(
+                    "RSession.ServerService"
+                );
 
-        Shared.Contracts.ISessionPlayerService sessionPlayer =
-            interfaceManager.GetSharedInterface<Shared.Contracts.ISessionPlayerService>(
-                "RSession.PlayerService"
-            );
-
-        ISessionServerService sessionServer =
-            interfaceManager.GetSharedInterface<ISessionServerService>("RSession.ServerService");
-
-        _serviceProvider
-            ?.GetRequiredService<Contracts.Core.IPlayerService>()
-            .Initialize(sessionPlayer, sessionServer);
-
-        //_serviceProvider?.GetRequiredService<DatabaseFactory>().Initialize(sessionEvent);
+            _serviceProvider?.GetService<PlayerService>()?.Initialize(playerService, serverService);
+        }
     }
 
     public override void Load(bool hotReload)
@@ -63,14 +55,8 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
 
         _ = services.AddSwiftly(Core);
 
-        _ = services.AddSingleton<ILogService, LogService>();
-        _ = services.AddSingleton<Contracts.Core.IPlayerService, PlayerService>();
-
-        _ = services.AddSingleton<PostgresService>();
-        _ = services.AddSingleton<SqlService>();
-        _ = services.AddSingleton<DatabaseFactory>();
-
-        _ = services.AddSingleton<IHook, OnUserMessageSayText2Service>();
+        _ = services.AddDatabase();
+        _ = services.AddServices();
 
         _serviceProvider = services.BuildServiceProvider();
     }
@@ -85,4 +71,3 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
         (_serviceProvider as IDisposable)?.Dispose();
     }
 }
-*/

@@ -1,35 +1,27 @@
-/*using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RSession.Contracts.Database;
+using RSession.Messages.Contracts.Database;
 using RSession.Messages.Contracts.Log;
+using RSession.Shared.Contracts;
 
 namespace RSession.Messages.Services.Database;
 
-internal sealed class DatabaseFactory
+internal class DatabaseFactory(
+    ILogService logService,
+    ILogger<DatabaseFactory> logger,
+    IServiceProvider serviceProvider
+) : IDatabaseFactory
 {
-    private readonly ILogService _logService;
-    private readonly ILogger<DatabaseFactory> _logger;
-    private readonly IDatabaseService _database;
+    private readonly ILogService _logService = logService;
+    private readonly ILogger<DatabaseFactory> _logger = logger;
 
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
 
-    public object DatabaseService { get; private set; }
+    private IDatabaseService? _databaseService;
 
-    public DatabaseFactory(
-        ILogService logService,
-        ILogger<DatabaseFactory> logger,
-        IRSessionDatabaseService database,
-        IServiceProvider serviceProvider
-    )
+    public void RegisterDatabaseService(ISessionDatabaseService databaseService, string type)
     {
-        _logService = logService;
-        _logger = logger;
-        _database = database;
-        _serviceProvider = serviceProvider;
-
-        string type = _database.Type;
-
-        DatabaseService = type.ToLowerInvariant() switch
+        _databaseService = type.ToLowerInvariant() switch
         {
             "postgres" => _serviceProvider.GetRequiredService<PostgresService>(),
             "mysql" => _serviceProvider.GetRequiredService<SqlService>(),
@@ -39,7 +31,9 @@ internal sealed class DatabaseFactory
             ),
         };
 
+        _databaseService.Initialize(databaseService);
+        _ = Task.Run(async () => await _databaseService.InitAsync());
+
         _logService.LogInformation($"DatabaseFactory initialized - '{type}'", logger: _logger);
     }
 }
-*/

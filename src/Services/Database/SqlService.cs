@@ -9,7 +9,7 @@ using RSession.Models.Database;
 
 namespace RSession.Services.Database;
 
-internal sealed class SqlService : ISqlService
+internal sealed class SqlService : IDatabaseService
 {
     private readonly ILogService _logService;
     private readonly ILogger<SqlService> _logger;
@@ -33,6 +33,9 @@ internal sealed class SqlService : ISqlService
 
         _queries = new SqlQueries();
     }
+
+    public async Task<DbConnection> GetConnectionAsync() =>
+        await _dataSource.OpenConnectionAsync().ConfigureAwait(false);
 
     public async Task InitAsync()
     {

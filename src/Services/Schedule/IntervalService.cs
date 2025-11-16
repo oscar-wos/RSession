@@ -25,7 +25,7 @@ internal sealed class IntervalService(
     private readonly ILogger<IntervalService> _logger = logger;
     private readonly IOptionsMonitor<SessionConfig> _config = config;
 
-    private readonly IDatabaseService _database = databaseFactory.Database;
+    private readonly IDatabaseService _databaseService = databaseFactory.GetDatabaseService();
     private readonly IPlayerService _playerService = playerService;
 
     private Timer? _timer;
@@ -49,7 +49,7 @@ internal sealed class IntervalService(
 
         foreach (IPlayer player in _core.PlayerManager.GetAllPlayers())
         {
-            if (_playerService.GetPlayer(player) is not { } sessionPlayer)
+            if (_playerService.GetSessionPlayer(player) is not { } sessionPlayer)
             {
                 continue;
             }
@@ -60,7 +60,7 @@ internal sealed class IntervalService(
 
         try
         {
-            await _database.UpdateSessionsAsync(playerIds, sessionIds);
+            await _databaseService.UpdateSessionsAsync(playerIds, sessionIds);
         }
         catch (Exception ex)
         {

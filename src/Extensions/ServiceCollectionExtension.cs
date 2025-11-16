@@ -17,8 +17,8 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddConfigs(this IServiceCollection services)
     {
-        _ = services.AddOptionsWithValidateOnStart<DatabaseConfig>().BindConfiguration("database");
         _ = services.AddOptionsWithValidateOnStart<SessionConfig>().BindConfiguration("config");
+        _ = services.AddOptionsWithValidateOnStart<DatabaseConfig>().BindConfiguration("database");
 
         return services;
     }
@@ -26,8 +26,8 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddDatabases(this IServiceCollection services)
     {
         _ = services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
-        _ = services.AddSingleton<IPostgresService, PostgresService>();
-        _ = services.AddSingleton<ISqlService, SqlService>();
+        _ = services.AddSingleton<PostgresService>();
+        _ = services.AddSingleton<SqlService>();
 
         return services;
     }

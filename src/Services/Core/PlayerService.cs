@@ -14,7 +14,7 @@ internal sealed class PlayerService : IPlayerService, IDisposable
     private readonly ILogService _logService;
     private readonly ILogger<PlayerService> _logger;
 
-    private readonly IDatabaseService _database;
+    private readonly IDatabaseService _databaseService;
     private readonly IEventService _eventService;
 
     private readonly Dictionary<ulong, SessionPlayer> _players = [];
@@ -31,13 +31,13 @@ internal sealed class PlayerService : IPlayerService, IDisposable
         _logService = logService;
         _logger = logger;
 
-        _database = databaseFactory.Database;
+        _databaseService = databaseFactory.GetDatabaseService();
         _eventService = eventService;
 
         _eventService.OnServerRegistered += OnServerRegistered;
     }
 
-    public SessionPlayer? GetPlayer(IPlayer player) =>
+    public SessionPlayer? GetSessionPlayer(IPlayer player) =>
         _players.TryGetValue(player.SteamID, out SessionPlayer sessionPlayer)
             ? sessionPlayer
             : null;
@@ -49,9 +49,9 @@ internal sealed class PlayerService : IPlayerService, IDisposable
 
             try
             {
-                int playerId = await _database.GetPlayerAsync(steamId).ConfigureAwait(false);
+                int playerId = await _databaseService.GetPlayerAsync(steamId).ConfigureAwait(false);
 
-                long sessionId = await _database
+                long sessionId = await _databaseService
                     .GetSessionAsync(playerId, serverId, player.IPAddress)
                     .ConfigureAwait(false);
 
@@ -77,7 +77,7 @@ internal sealed class PlayerService : IPlayerService, IDisposable
 
     public void HandlePlayerDisconnected(IPlayer player)
     {
-        if (GetPlayer(player) is null)
+        if (GetSessionPlayer(player) is null)
         {
             _logService.LogWarning(
                 $"Player not registered - {player.Controller.PlayerName} ({player.SteamID})",

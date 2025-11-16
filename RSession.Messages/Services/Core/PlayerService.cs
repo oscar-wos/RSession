@@ -4,18 +4,15 @@ using SwiftlyS2.Shared.Players;
 
 namespace RSession.Messages.Services.Core;
 
-internal sealed class PlayerService : Contracts.Core.IPlayerService
+internal sealed class PlayerService : IPlayerService
 {
-    private Shared.Contracts.ISessionPlayerService? _sessionPlayerService;
-    private ISessionServerService? _sessionServerService;
+    private ISessionPlayerService? _playerService;
+    private ISessionServerService? _serverService;
 
-    public void Initialize(
-        Shared.Contracts.ISessionPlayerService sessionPlayerService,
-        ISessionServerService sessionServerService
-    )
+    public void Initialize(ISessionPlayerService playerService, ISessionServerService serverService)
     {
-        _sessionPlayerService = sessionPlayerService;
-        _sessionServerService = sessionServerService;
+        _playerService = playerService;
+        _serverService = serverService;
     }
 
     public void HandlePlayerMessage(

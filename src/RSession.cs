@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RSession.Contracts.Core;
+using RSession.Contracts.Database;
 using RSession.Contracts.Event;
 using RSession.Contracts.Schedule;
 using RSession.Extensions;
@@ -34,6 +36,28 @@ public sealed partial class RSession(ISwiftlyCore core) : BasePlugin(core)
         interfaceManager.AddSharedInterface<ISessionEventService, EventService>(
             "RSession.EventService",
             _serviceProvider.GetRequiredService<EventService>()
+        );
+
+        interfaceManager.AddSharedInterface<ISessionPlayerService, PlayerService>(
+            "RSession.PlayerService",
+            _serviceProvider.GetRequiredService<PlayerService>()
+        );
+
+        interfaceManager.AddSharedInterface<ISessionServerService, ServerService>(
+            "RSession.ServerService",
+            _serviceProvider.GetRequiredService<ServerService>()
+        );
+    }
+
+    public override void UseSharedInterface(IInterfaceManager interfaceManager)
+    {
+        if (_serviceProvider is null)
+        {
+            return;
+        }
+
+        Core.Scheduler.NextTick(() =>
+            _serviceProvider.GetRequiredService<IDatabaseFactory>().InvokeDatabaseConfigured()
         );
     }
 
