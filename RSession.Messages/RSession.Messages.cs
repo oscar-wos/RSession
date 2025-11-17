@@ -32,24 +32,14 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
                 ?.Initialize(sessionEventService);
         }
 
-        if (
-            interfaceManager.HasSharedInterface("RSession.PlayerService")
-            && interfaceManager.HasSharedInterface("RSession.ServerService")
-        )
+        if (interfaceManager.HasSharedInterface("RSession.PlayerService"))
         {
             ISessionPlayerService sessionPlayerService =
                 interfaceManager.GetSharedInterface<ISessionPlayerService>(
                     "RSession.PlayerService"
                 );
 
-            ISessionServerService sessionServerService =
-                interfaceManager.GetSharedInterface<ISessionServerService>(
-                    "RSession.ServerService"
-                );
-
-            _serviceProvider
-                ?.GetService<IPlayerService>()
-                ?.Initialize(sessionPlayerService, sessionServerService);
+            _serviceProvider?.GetService<IPlayerService>()?.Initialize(sessionPlayerService);
         }
     }
 

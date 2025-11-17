@@ -1,27 +1,54 @@
+using Microsoft.Extensions.Logging;
 using RSession.Messages.Contracts.Core;
+using RSession.Messages.Contracts.Database;
+using RSession.Messages.Contracts.Log;
 using RSession.Shared.Contracts;
 using SwiftlyS2.Shared.Players;
 
 namespace RSession.Messages.Services.Core;
 
-internal sealed class PlayerService : IPlayerService
+internal sealed class PlayerService(
+    ILogService logService,
+    ILogger<PlayerService> logger,
+    IDatabaseFactory databaseFactory
+) : IPlayerService
 {
+    private readonly ILogService _logService = logService;
+    private readonly ILogger<PlayerService> _logger = logger;
+
+    private readonly IDatabaseFactory _databaseFactory = databaseFactory;
     private ISessionPlayerService? _sessionPlayerService;
-    private ISessionServerService? _sessionServerService;
 
-    public void Initialize(
-        ISessionPlayerService sessionPlayerService,
-        ISessionServerService sessionServerService
-    )
-    {
+    public void Initialize(ISessionPlayerService sessionPlayerService) =>
         _sessionPlayerService = sessionPlayerService;
-        _sessionServerService = sessionServerService;
-    }
 
-    public void HandlePlayerMessage(
-        IPlayer player,
-        short teamNum,
-        bool teamChat,
-        string message
-    ) { }
+    public void HandlePlayerMessage(IPlayer player, short teamNum, bool teamChat, string message) =>
+        Task.Run(async () =>
+        {
+            if (_sessionPlayerService?.GetSessionId(player) is not { } sessionId)
+            {
+                _logService.LogWarning(
+                    $"Player not registered - {player.Controller.PlayerName} ({player.SteamID})",
+                    logger: _logger
+                );
+
+                return;
+            }
+
+            if (_databaseFactory.GetDatabaseService() is { } databaseService)
+            {
+                try
+                {
+                    await databaseService.InsertMessageAsync(sessionId, teamNum, teamChat, message);
+                }
+                catch (Exception ex)
+                {
+                    _logService.LogError(
+                        $"Unable to insert message - {player.Controller.PlayerName} ({player.SteamID}) : {message}",
+                        exception: ex,
+                        logger: _logger
+                    );
+                }
+            }
+        });
 }

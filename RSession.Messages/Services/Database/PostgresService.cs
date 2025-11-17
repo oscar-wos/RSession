@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Npgsql;
 using RSession.Messages.Contracts.Database;
 using RSession.Messages.Models.Database;
@@ -40,5 +41,35 @@ internal class PostgresService : IPostgresService
         }
 
         await transaction.CommitAsync().ConfigureAwait(false);
+    }
+
+    public async Task InsertMessageAsync(
+        long sessionId,
+        short teamNum,
+        bool teamChat,
+        string message
+    )
+    {
+        if (_sessionDatabaseService is null)
+        {
+            return;
+        }
+
+        await using NpgsqlConnection? connection =
+            await _sessionDatabaseService.GetConnectionAsync() as NpgsqlConnection;
+
+        if (connection is null)
+        {
+            return;
+        }
+
+        await using NpgsqlCommand command = new(_queries.InsertMessage, connection);
+
+        _ = command.Parameters.AddWithValue("@sessionId", sessionId);
+        _ = command.Parameters.AddWithValue("@teamNum", teamNum);
+        _ = command.Parameters.AddWithValue("@teamChat", teamChat);
+        _ = command.Parameters.AddWithValue("@message", message);
+
+        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
     }
 }
