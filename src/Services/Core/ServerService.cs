@@ -33,7 +33,7 @@ internal sealed class ServerService(
 
             try
             {
-                await _databaseService.InitializeAsync().ConfigureAwait(false);
+                await _databaseService.CreateTablesAsync().ConfigureAwait(false);
 
                 short serverId = await _databaseService
                     .GetServerAsync(ip, port)

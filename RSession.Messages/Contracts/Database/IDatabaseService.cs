@@ -5,5 +5,5 @@ namespace RSession.Messages.Contracts.Database;
 internal interface IDatabaseService
 {
     void Initialize(ISessionDatabaseService databaseService);
-    Task InitAsync();
+    Task CreateTablesAsync();
 }

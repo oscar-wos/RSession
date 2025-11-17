@@ -3,12 +3,12 @@ using RSession.Shared.Contracts;
 
 namespace RSession.Messages.Services.Database;
 
-internal class SqlService : IDatabaseService
+internal class SqlService : ISqlService
 {
     private ISessionDatabaseService? _databaseService;
 
     public void Initialize(ISessionDatabaseService databaseService) =>
         _databaseService = databaseService;
 
-    public Task InitAsync() => throw new NotImplementedException();
+    public Task CreateTablesAsync() => throw new NotImplementedException();
 }

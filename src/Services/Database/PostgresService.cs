@@ -36,7 +36,7 @@ internal sealed class PostgresService : IPostgresService, IAsyncDisposable
     public async Task<DbConnection> GetConnectionAsync() =>
         await _dataSource.OpenConnectionAsync().ConfigureAwait(false);
 
-    public async Task InitializeAsync()
+    public async Task CreateTablesAsync()
     {
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync()

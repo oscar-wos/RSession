@@ -11,7 +11,7 @@ internal sealed class OnUserMessageSayText2Service(
     ILogService logService,
     ILogger<OnUserMessageSayText2Service> logger,
     IPlayerService playerService
-) : IHook
+) : IHook, IDisposable
 {
     private static readonly uint _cStrikeChatAllHash = MurmurHash2.HashString("Cstrike_Chat_All");
 
@@ -48,21 +48,6 @@ internal sealed class OnUserMessageSayText2Service(
         }
     }
 
-    public void Unregister()
-    {
-        if (_cUserMessageSayText2Guid == Guid.Empty)
-        {
-            return;
-        }
-
-        _core.NetMessage.Unhook(_cUserMessageSayText2Guid);
-
-        _logService.LogInformation(
-            $"CUserMessageSayText2 unhooked - {_cUserMessageSayText2Guid}",
-            logger: _logger
-        );
-    }
-
     private void OnUserMessageSayText2(in CUserMessageSayText2 msg)
     {
         int playerId = msg.Entityindex - 1;
@@ -96,5 +81,20 @@ internal sealed class OnUserMessageSayText2Service(
         );
 
         _playerService.HandlePlayerMessage(player, teamNum, teamChat, message);
+    }
+
+    public void Dispose()
+    {
+        if (_cUserMessageSayText2Guid == Guid.Empty)
+        {
+            return;
+        }
+
+        _core.NetMessage.Unhook(_cUserMessageSayText2Guid);
+
+        _logService.LogInformation(
+            $"CUserMessageSayText2 disposed - {_cUserMessageSayText2Guid}",
+            logger: _logger
+        );
     }
 }

@@ -25,10 +25,12 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
     {
         if (interfaceManager.HasSharedInterface("RSession.EventService"))
         {
-            ISessionEventService eventService =
+            ISessionEventService sessionEventService =
                 interfaceManager.GetSharedInterface<ISessionEventService>("RSession.EventService");
 
-            _serviceProvider?.GetService<OnDatabaseConfiguredService>()?.Initialize(eventService);
+            _serviceProvider
+                ?.GetService<OnDatabaseConfiguredService>()
+                ?.Initialize(sessionEventService);
         }
 
         if (
@@ -36,17 +38,19 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
             && interfaceManager.HasSharedInterface("RSession.ServerService")
         )
         {
-            ISessionPlayerService playerService =
+            ISessionPlayerService sessionPlayerService =
                 interfaceManager.GetSharedInterface<ISessionPlayerService>(
                     "RSession.PlayerService"
                 );
 
-            ISessionServerService serverService =
+            ISessionServerService sessionServerService =
                 interfaceManager.GetSharedInterface<ISessionServerService>(
                     "RSession.ServerService"
                 );
 
-            _serviceProvider?.GetService<PlayerService>()?.Initialize(playerService, serverService);
+            _serviceProvider
+                ?.GetService<PlayerService>()
+                ?.Initialize(sessionPlayerService, sessionServerService);
         }
     }
 
@@ -56,20 +60,17 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
 
         _ = services.AddSwiftly(Core);
 
-        _ = services.AddDatabase();
+        _ = services.AddDatabases();
+        _ = services.AddHooks();
         _ = services.AddServices();
 
         _serviceProvider = services.BuildServiceProvider();
-    }
 
-    public override void Unload()
-    {
-        foreach (IHook hook in _serviceProvider?.GetServices<IHook>() ?? [])
+        foreach (IHook hook in _serviceProvider.GetServices<IHook>())
         {
-            hook.Unregister();
+            hook.Register();
         }
-
-        Core.Logger.LogInformation("RSession.Messages Unloaded - disposing");
-        (_serviceProvider as IDisposable)?.Dispose();
     }
+
+    public override void Unload() => (_serviceProvider as IDisposable)?.Dispose();
 }

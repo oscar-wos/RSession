@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RSession.Messages.Contracts.Core;
 using RSession.Messages.Contracts.Database;
+using RSession.Messages.Contracts.Hook;
 using RSession.Messages.Contracts.Log;
 using RSession.Messages.Services.Core;
 using RSession.Messages.Services.Database;
@@ -11,11 +12,27 @@ namespace RSession.Messages.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddDatabase(this IServiceCollection services)
+    public static IServiceCollection AddDatabases(this IServiceCollection services)
     {
-        _ = services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
         _ = services.AddSingleton<PostgresService>();
         _ = services.AddSingleton<SqlService>();
+
+        _ = services.AddSingleton(serviceProvider => new Lazy<IPostgresService>(() =>
+            serviceProvider.GetRequiredService<PostgresService>()
+        ));
+
+        _ = services.AddSingleton(serviceProvider => new Lazy<ISqlService>(() =>
+            serviceProvider.GetRequiredService<SqlService>()
+        ));
+
+        _ = services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddHooks(this IServiceCollection services)
+    {
+        _ = services.AddSingleton<IHook, OnUserMessageSayText2Service>();
 
         return services;
     }

@@ -4,5 +4,5 @@ namespace RSession.Messages.Contracts.Database;
 
 internal interface IDatabaseFactory
 {
-    void RegisterDatabaseService(ISessionDatabaseService databaseService, string type);
+    void RegisterDatabaseService(ISessionDatabaseService sessionDatabaseService, string type);
 }

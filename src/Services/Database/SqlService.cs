@@ -36,7 +36,7 @@ internal sealed class SqlService : ISqlService, IAsyncDisposable
     public async Task<DbConnection> GetConnectionAsync() =>
         await _dataSource.OpenConnectionAsync().ConfigureAwait(false);
 
-    public async Task InitializeAsync()
+    public async Task CreateTablesAsync()
     {
         await using MySqlConnection connection = await _dataSource
             .OpenConnectionAsync()

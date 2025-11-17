@@ -5,24 +5,24 @@ using RSession.Shared.Contracts;
 
 namespace RSession.Messages.Services.Database;
 
-internal class PostgresService : IDatabaseService
+internal class PostgresService : IPostgresService
 {
     private readonly PostgresQueries _queries = new();
 
-    private ISessionDatabaseService? _databaseService;
+    private ISessionDatabaseService? _sessionDatabaseService;
 
-    public void Initialize(ISessionDatabaseService databaseService) =>
-        _databaseService = databaseService;
+    public void Initialize(ISessionDatabaseService sessionDatabaseService) =>
+        _sessionDatabaseService = sessionDatabaseService;
 
-    public async Task InitAsync()
+    public async Task CreateTablesAsync()
     {
-        if (_databaseService is null)
+        if (_sessionDatabaseService is null)
         {
             return;
         }
 
         await using NpgsqlConnection? connection =
-            await _databaseService.GetConnectionAsync() as NpgsqlConnection;
+            await _sessionDatabaseService.GetConnectionAsync() as NpgsqlConnection;
 
         if (connection is null)
         {
