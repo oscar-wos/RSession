@@ -1,8 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using RSession.Messages.Contracts.Core;
 using RSession.Messages.Contracts.Hook;
 using RSession.Messages.Extensions;
-using RSession.Messages.Services.Core;
 using RSession.Messages.Services.Event;
 using RSession.Shared.Contracts;
 using SwiftlyS2.Shared;
@@ -49,7 +48,7 @@ public sealed partial class Messages(ISwiftlyCore core) : BasePlugin(core)
                 );
 
             _serviceProvider
-                ?.GetService<PlayerService>()
+                ?.GetService<IPlayerService>()
                 ?.Initialize(sessionPlayerService, sessionServerService);
         }
     }

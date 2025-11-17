@@ -1,3 +1,6 @@
 namespace RSession.Messages.Contracts.Database;
 
-internal interface IDatabaseQueries { }
+internal interface IDatabaseQueries
+{
+    string InsertMessage { get; }
+}

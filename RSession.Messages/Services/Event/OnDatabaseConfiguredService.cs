@@ -26,10 +26,8 @@ internal sealed class OnDatabaseConfiguredService(
         _logService.LogInformation("OnDatabaseConfigured subscribed", logger: _logger);
     }
 
-    private void OnDatabaseConfigured(ISessionDatabaseService databaseService, string type)
-    {
+    private void OnDatabaseConfigured(ISessionDatabaseService databaseService, string type) =>
         _databaseFactory.RegisterDatabaseService(databaseService, type);
-    }
 
     public void Dispose()
     {

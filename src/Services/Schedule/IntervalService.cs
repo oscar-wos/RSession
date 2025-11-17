@@ -58,6 +58,11 @@ internal sealed class IntervalService(
             sessionIds.Add(sessionPlayer.Session);
         }
 
+        if (playerIds.Count == 0)
+        {
+            return;
+        }
+
         try
         {
             await _databaseService.UpdateSessionsAsync(playerIds, sessionIds);
