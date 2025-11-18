@@ -1,3 +1,17 @@
+// Copyright (C) 2025 oscar-wos
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
 using MySqlConnector;
 using RSession.Maps.Contracts.Database;
 using RSession.Maps.Models.Database;
@@ -40,35 +54,5 @@ internal sealed class SqlService : ISqlService
         }
 
         await transaction.CommitAsync().ConfigureAwait(false);
-    }
-
-    public async Task InsertMessageAsync(
-        long sessionId,
-        short teamNum,
-        bool teamChat,
-        string message
-    )
-    {
-        if (_sessionDatabaseService is null)
-        {
-            return;
-        }
-
-        await using MySqlConnection? connection =
-            await _sessionDatabaseService.GetConnectionAsync() as MySqlConnection;
-
-        if (connection is null)
-        {
-            return;
-        }
-
-        await using MySqlCommand command = new(_queries.InsertMap, connection);
-
-        _ = command.Parameters.AddWithValue("@sessionId", sessionId);
-        _ = command.Parameters.AddWithValue("@teamNum", teamNum);
-        _ = command.Parameters.AddWithValue("@teamChat", teamChat);
-        _ = command.Parameters.AddWithValue("@message", message);
-
-        _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
     }
 }

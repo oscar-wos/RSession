@@ -14,4 +14,7 @@
     <ProjectReference Include="..\RLogger\src\RLogger.csproj" />
     <ProjectReference Include="..\RSession.Shared\RSession.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\Hook\" />
+  </ItemGroup>
 </Project>

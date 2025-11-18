@@ -1,6 +1,20 @@
+// Copyright (C) 2025 oscar-wos
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
 using Microsoft.Extensions.DependencyInjection;
+using RSession.Maps.Contracts.Core;
 using RSession.Maps.Contracts.Event;
-using RSession.Maps.Contracts.Hook;
 using RSession.Maps.Extensions;
 using RSession.Shared.Contracts;
 using SwiftlyS2.Shared;
@@ -31,7 +45,15 @@ public sealed partial class Maps(ISwiftlyCore core) : BasePlugin(core)
                 ?.Initialize(sessionEventService);
         }
 
-        if (interfaceManager.HasSharedInterface("RSession.ServerService")) { }
+        if (interfaceManager.HasSharedInterface("RSession.PlayerService"))
+        {
+            ISessionPlayerService sessionPlayerService =
+                interfaceManager.GetSharedInterface<ISessionPlayerService>(
+                    "RSession.PlayerService"
+                );
+
+            _serviceProvider?.GetService<IPlayerService>()?.Initialize(sessionPlayerService);
+        }
     }
 
     public override void Load(bool hotReload)
@@ -42,15 +64,9 @@ public sealed partial class Maps(ISwiftlyCore core) : BasePlugin(core)
 
         _ = services.AddDatabases();
         _ = services.AddEvents();
-        _ = services.AddHooks();
         _ = services.AddServices();
 
         _serviceProvider = services.BuildServiceProvider();
-
-        foreach (IHook hook in _serviceProvider.GetServices<IHook>())
-        {
-            hook.Register();
-        }
     }
 
     public override void Unload() => (_serviceProvider as IDisposable)?.Dispose();

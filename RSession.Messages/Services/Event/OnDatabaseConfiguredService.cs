@@ -42,7 +42,7 @@ internal sealed class OnDatabaseConfiguredService(
     }
 
     private void OnDatabaseConfigured(ISessionDatabaseService databaseService, string type) =>
-        _databaseFactory.RegisterDatabaseService(databaseService, type);
+        _databaseFactory.Initialize(databaseService, type);
 
     public void Dispose()
     {
