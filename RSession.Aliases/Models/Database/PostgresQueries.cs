@@ -31,5 +31,6 @@ internal sealed class PostgresQueries : LoadQueries, IDatabaseQueries
     public string SelectAlias =>
         "SELECT alias FROM aliases WHERE player_id = @playerId ORDER BY timestamp DESC";
 
-    public string InsertAlias => "INSERT INTO ALIAS (player_id, alias) VALUES (@playerId, @alias)";
+    public string InsertAlias =>
+        "INSERT INTO aliases (player_id, alias) VALUES (@playerId, @alias)";
 }
