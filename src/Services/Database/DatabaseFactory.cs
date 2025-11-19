@@ -30,8 +30,6 @@ internal sealed class DatabaseFactory : IDatabaseFactory
     private readonly IEventService _eventService;
     private readonly IDatabaseService _databaseService;
 
-    public IDatabaseService GetDatabaseService() => _databaseService;
-
     public DatabaseFactory(
         ILogService logService,
         ILogger<DatabaseFactory> logger,
@@ -61,6 +59,8 @@ internal sealed class DatabaseFactory : IDatabaseFactory
 
         _logService.LogInformation($"DatabaseFactory initialized - '{type}'", logger: _logger);
     }
+
+    public IDatabaseService GetDatabaseService() => _databaseService;
 
     public void InvokeDatabaseConfigured() =>
         _eventService.InvokeDatabaseConfigured(_databaseService, _config.CurrentValue.Type);

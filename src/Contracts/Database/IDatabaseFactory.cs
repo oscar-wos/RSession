@@ -16,6 +16,6 @@ namespace RSession.Contracts.Database;
 
 internal interface IDatabaseFactory
 {
-    void InvokeDatabaseConfigured();
     IDatabaseService GetDatabaseService();
+    void InvokeDatabaseConfigured();
 }

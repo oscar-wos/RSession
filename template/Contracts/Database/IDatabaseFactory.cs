@@ -18,6 +18,6 @@ namespace RSession.Template.Contracts.Database;
 
 internal interface IDatabaseFactory
 {
-    void Initialize(ISessionDatabaseService sessionDatabaseService, string type);
     IDatabaseService? GetDatabaseService();
+    void Initialize(ISessionDatabaseService sessionDatabaseService, string type);
 }
