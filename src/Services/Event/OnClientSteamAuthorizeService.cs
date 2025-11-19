@@ -87,6 +87,11 @@ internal sealed class OnClientSteamAuthorizeService(
             return;
         }
 
+        _logService.LogInformation(
+            $"Unable to authorize player - {player.Controller.PlayerName} ({player.SteamID})",
+            logger: _logger
+        );
+
         player.Kick("No Auth", ENetworkDisconnectionReason.NETWORK_DISCONNECT_STEAM_AUTHINVALID);
     }
 
