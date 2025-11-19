@@ -68,9 +68,5 @@ internal sealed class OnClientDisconnectedService(
         _playerService.HandlePlayerDisconnected(player);
     }
 
-    public void Dispose()
-    {
-        _core.Event.OnClientDisconnected -= OnClientDisconnected;
-        _logService.LogInformation("OnClientDisconnected disposed", logger: _logger);
-    }
+    public void Dispose() => _core.Event.OnClientDisconnected -= OnClientDisconnected;
 }

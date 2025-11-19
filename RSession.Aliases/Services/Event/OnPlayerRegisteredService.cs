@@ -44,9 +44,5 @@ internal class OnPlayerRegisteredService(
         _playerService.HandlePlayerAlias(player, sessionPlayer.Id);
     }
 
-    public void Dispose()
-    {
-        _sessionEventService?.OnPlayerRegistered -= OnPlayerRegistered;
-        _logService.LogInformation("OnPlayerRegisteredService disposed", logger: _logger);
-    }
+    public void Dispose() => _sessionEventService?.OnPlayerRegistered -= OnPlayerRegistered;
 }

@@ -186,9 +186,5 @@ internal sealed class PostgresService : IPostgresService, IAsyncDisposable
         return builder.ConnectionString;
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await _dataSource.DisposeAsync().ConfigureAwait(false);
-        _logService.LogInformation("PostgresService disposed", logger: _logger);
-    }
+    public async ValueTask DisposeAsync() => await _dataSource.DisposeAsync().ConfigureAwait(false);
 }

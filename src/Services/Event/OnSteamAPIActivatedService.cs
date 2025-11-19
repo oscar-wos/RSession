@@ -45,9 +45,5 @@ internal sealed class OnSteamAPIActivatedService(
         _serverService.Initialize();
     }
 
-    public void Dispose()
-    {
-        _core.Event.OnSteamAPIActivated -= OnSteamAPIActivated;
-        _logService.LogInformation("OnSteamAPIActivated disposed", logger: _logger);
-    }
+    public void Dispose() => _core.Event.OnSteamAPIActivated -= OnSteamAPIActivated;
 }

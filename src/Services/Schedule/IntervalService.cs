@@ -91,6 +91,5 @@ internal sealed class IntervalService(
     {
         _timer?.Stop();
         _timer?.Dispose();
-        _logService.LogInformation("IntervalService disposed", logger: _logger);
     }
 }

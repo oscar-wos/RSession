@@ -107,10 +107,5 @@ internal sealed class OnUserMessageSayText2Service(
         }
 
         _core.NetMessage.Unhook(_cUserMessageSayText2Guid);
-
-        _logService.LogInformation(
-            $"CUserMessageSayText2 disposed - {_cUserMessageSayText2Guid}",
-            logger: _logger
-        );
     }
 }

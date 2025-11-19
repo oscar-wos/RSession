@@ -51,6 +51,5 @@ internal sealed class OnDatabaseConfiguredService(
     {
         _sessionEventService?.OnDatabaseConfigured -= OnDatabaseConfigured;
         _sessionEventService?.OnDispose -= OnDispose;
-        _logService.LogInformation("OnDatabaseConfiguredService disposed", logger: _logger);
     }
 }

@@ -69,9 +69,5 @@ internal sealed class OnClientSteamAuthorizeService(
         _playerService.HandlePlayerAuthorize(player, serverId);
     }
 
-    public void Dispose()
-    {
-        _core.Event.OnClientSteamAuthorize -= OnClientSteamAuthorize;
-        _logService.LogInformation("OnClientSteamAuthorize disposed", logger: _logger);
-    }
+    public void Dispose() => _core.Event.OnClientSteamAuthorize -= OnClientSteamAuthorize;
 }

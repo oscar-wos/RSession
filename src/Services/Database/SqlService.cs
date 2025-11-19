@@ -186,9 +186,5 @@ internal sealed class SqlService : ISqlService, IAsyncDisposable
         return builder.ConnectionString;
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await _dataSource.DisposeAsync().ConfigureAwait(false);
-        _logService.LogInformation("SqlService disposed", logger: _logger);
-    }
+    public async ValueTask DisposeAsync() => await _dataSource.DisposeAsync().ConfigureAwait(false);
 }
