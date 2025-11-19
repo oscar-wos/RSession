@@ -22,10 +22,13 @@ namespace RSession.Services.Core;
 
 internal sealed class EventService : IEventService
 {
+    public event OnElapsedDelegate? OnElapsed;
     public event OnDatabaseConfiguredDelegate? OnDatabaseConfigured;
     public event OnPlayerRegisteredDelegate? OnPlayerRegistered;
     public event OnServerRegisteredDelegate? OnServerRegistered;
     public event OnDisposeDelegate? OnDispose;
+
+    public void InvokeElapsed() => OnElapsed?.Invoke();
 
     public void InvokeDatabaseConfigured(
         ISessionDatabaseService sessionDatabaseService,

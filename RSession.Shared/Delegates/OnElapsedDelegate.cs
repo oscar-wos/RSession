@@ -12,16 +12,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-using RSession.Shared.Contracts;
-using RSession.Shared.Structs;
-using SwiftlyS2.Shared.Players;
+namespace RSession.Shared.Delegates;
 
-namespace RSession.Contracts.Core;
-
-internal interface IEventService : ISessionEventService
-{
-    void InvokeElapsed();
-    void InvokeDatabaseConfigured(ISessionDatabaseService databaseService, string type);
-    void InvokePlayerRegistered(IPlayer player, in SessionPlayer sessionPlayer);
-    void InvokeServerRegistered(short serverId);
-}
+public delegate void OnElapsedDelegate();

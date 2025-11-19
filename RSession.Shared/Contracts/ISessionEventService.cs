@@ -18,6 +18,7 @@ namespace RSession.Shared.Contracts;
 
 public interface ISessionEventService
 {
+    event OnElapsedDelegate OnElapsed;
     event OnDatabaseConfiguredDelegate OnDatabaseConfigured;
     event OnPlayerRegisteredDelegate OnPlayerRegistered;
     event OnServerRegisteredDelegate OnServerRegistered;

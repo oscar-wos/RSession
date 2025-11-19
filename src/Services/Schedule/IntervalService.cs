@@ -15,32 +15,25 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RSession.Contracts.Core;
-using RSession.Contracts.Database;
 using RSession.Contracts.Log;
 using RSession.Contracts.Schedule;
 using RSession.Models.Config;
-using SwiftlyS2.Shared;
-using SwiftlyS2.Shared.Players;
 using Timer = System.Timers.Timer;
 
 namespace RSession.Services.Schedule;
 
 internal sealed class IntervalService(
-    ISwiftlyCore core,
     ILogService logService,
     ILogger<IntervalService> logger,
     IOptionsMonitor<SessionConfig> config,
-    IDatabaseFactory databaseFactory,
-    IPlayerService playerService
+    IEventService eventService
 ) : IIntervalService, IDisposable
 {
-    private readonly ISwiftlyCore _core = core;
     private readonly ILogService _logService = logService;
     private readonly ILogger<IntervalService> _logger = logger;
     private readonly IOptionsMonitor<SessionConfig> _config = config;
 
-    private readonly IDatabaseService _databaseService = databaseFactory.GetDatabaseService();
-    private readonly IPlayerService _playerService = playerService;
+    private readonly IEventService _eventService = eventService;
 
     private Timer? _timer;
 
@@ -56,36 +49,7 @@ internal sealed class IntervalService(
         _logService.LogInformation("IntervalService initialized", logger: _logger);
     }
 
-    private async Task OnElapsed()
-    {
-        List<int> playerIds = [];
-        List<long> sessionIds = [];
-
-        foreach (IPlayer player in _core.PlayerManager.GetAllPlayers())
-        {
-            if (_playerService.GetSessionPlayer(player) is not { } sessionPlayer)
-            {
-                continue;
-            }
-
-            playerIds.Add(sessionPlayer.Id);
-            sessionIds.Add(sessionPlayer.Session);
-        }
-
-        if (playerIds.Count == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            await _databaseService.UpdateSessionsAsync(playerIds, sessionIds);
-        }
-        catch (Exception ex)
-        {
-            _logService.LogError($"IntervalService.OnElapsed()", exception: ex, logger: _logger);
-        }
-    }
+    private async Task OnElapsed() => _eventService.InvokeElapsed();
 
     public void Dispose()
     {

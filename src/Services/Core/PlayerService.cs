@@ -48,6 +48,7 @@ internal sealed class PlayerService : IPlayerService, IDisposable
         _databaseService = databaseFactory.GetDatabaseService();
         _eventService = eventService;
 
+        _eventService.OnElapsed += OnElapsed;
         _eventService.OnServerRegistered += OnServerRegistered;
     }
 
@@ -114,6 +115,42 @@ internal sealed class PlayerService : IPlayerService, IDisposable
         _ = _players.Remove(player.SteamID);
     }
 
+    private void OnElapsed() =>
+        Task.Run(async () =>
+        {
+            List<int> playerIds = [];
+            List<long> sessionIds = [];
+
+            foreach (IPlayer player in _core.PlayerManager.GetAllPlayers())
+            {
+                if (GetSessionPlayer(player) is not { } sessionPlayer)
+                {
+                    continue;
+                }
+
+                playerIds.Add(sessionPlayer.Id);
+                sessionIds.Add(sessionPlayer.Session);
+            }
+
+            if (playerIds.Count == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                await _databaseService.UpdateSessionsAsync(playerIds, sessionIds);
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError(
+                    $"IntervalService.OnElapsed()",
+                    exception: ex,
+                    logger: _logger
+                );
+            }
+        });
+
     private void OnServerRegistered(short serverId)
     {
         foreach (IPlayer player in _core.PlayerManager.GetAllPlayers())
@@ -127,5 +164,9 @@ internal sealed class PlayerService : IPlayerService, IDisposable
         }
     }
 
-    public void Dispose() => _eventService.OnServerRegistered -= OnServerRegistered;
+    public void Dispose()
+    {
+        _eventService.OnElapsed -= OnElapsed;
+        _eventService.OnServerRegistered -= OnServerRegistered;
+    }
 }
