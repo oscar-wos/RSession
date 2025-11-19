@@ -18,6 +18,7 @@ using RSession.Contracts.Event;
 using RSession.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Events;
+using SwiftlyS2.Shared.ProtobufDefinitions;
 
 namespace RSession.Services.Event;
 
@@ -39,7 +40,10 @@ internal sealed class OnClientSteamAuthorizeService(
     public void Subscribe()
     {
         _core.Event.OnClientSteamAuthorize += OnClientSteamAuthorize;
+        _core.Event.OnClientSteamAuthorizeFail += OnClientSteamAuthorizeFail;
+
         _logService.LogInformation("OnClientSteamAuthorize subscribed", logger: _logger);
+        _logService.LogInformation("OnClientSteamAuthorizeFail subscribed", logger: _logger);
     }
 
     private void OnClientSteamAuthorize(IOnClientSteamAuthorizeEvent @event)
@@ -69,5 +73,26 @@ internal sealed class OnClientSteamAuthorizeService(
         _playerService.HandlePlayerAuthorize(player, serverId);
     }
 
-    public void Dispose() => _core.Event.OnClientSteamAuthorize -= OnClientSteamAuthorize;
+    private void OnClientSteamAuthorizeFail(IOnClientSteamAuthorizeFailEvent @event)
+    {
+        int playerId = @event.PlayerId;
+
+        if (_core.PlayerManager.GetPlayer(playerId) is not { } player)
+        {
+            _logService.LogWarning(
+                $"OnClientSteamAuthorizeFail Player not found - {playerId}",
+                logger: _logger
+            );
+
+            return;
+        }
+
+        player.Kick("No Auth", ENetworkDisconnectionReason.NETWORK_DISCONNECT_STEAM_AUTHINVALID);
+    }
+
+    public void Dispose()
+    {
+        _core.Event.OnClientSteamAuthorize -= OnClientSteamAuthorize;
+        _core.Event.OnClientSteamAuthorizeFail -= OnClientSteamAuthorizeFail;
+    }
 }
