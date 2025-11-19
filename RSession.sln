@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession.Messages", "RSessi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession.Aliases", "RSession.Aliases\RSession.Aliases.csproj", "{0C162EBC-CB9B-CB4B-EA4A-11210F82F2DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession.Played", "RSession.Played\RSession.Played.csproj", "{FEBFE5AB-678D-FFDE-3B5A-0A8663615737}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSession.Maps", "RSession.Maps\RSession.Maps.csproj", "{B81513A0-2F26-FF0F-8419-BF655AD42867}"
 EndProject
 Global
@@ -47,6 +49,10 @@ Global
 		{0C162EBC-CB9B-CB4B-EA4A-11210F82F2DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C162EBC-CB9B-CB4B-EA4A-11210F82F2DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C162EBC-CB9B-CB4B-EA4A-11210F82F2DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEBFE5AB-678D-FFDE-3B5A-0A8663615737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEBFE5AB-678D-FFDE-3B5A-0A8663615737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEBFE5AB-678D-FFDE-3B5A-0A8663615737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEBFE5AB-678D-FFDE-3B5A-0A8663615737}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B81513A0-2F26-FF0F-8419-BF655AD42867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B81513A0-2F26-FF0F-8419-BF655AD42867}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B81513A0-2F26-FF0F-8419-BF655AD42867}.Release|Any CPU.ActiveCfg = Release|Any CPU
