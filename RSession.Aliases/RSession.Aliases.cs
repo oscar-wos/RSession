@@ -42,6 +42,10 @@ public sealed partial class Aliases(ISwiftlyCore core) : BasePlugin(core)
             _serviceProvider
                 ?.GetService<IOnDatabaseConfiguredService>()
                 ?.Initialize(sessionEventService);
+
+            _serviceProvider
+                ?.GetService<IOnPlayerRegisteredService>()
+                ?.Initialize(sessionEventService);
         }
     }
 
