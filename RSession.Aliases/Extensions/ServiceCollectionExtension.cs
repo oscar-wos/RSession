@@ -47,6 +47,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddEvents(this IServiceCollection services)
     {
         _ = services.AddSingleton<IOnDatabaseConfiguredService, OnDatabaseConfiguredService>();
+        _ = services.AddSingleton<IOnPlayerRegisteredService, OnPlayerRegisteredService>();
 
         return services;
     }
