@@ -43,18 +43,16 @@ internal sealed class PlayerService(
                 try
                 {
                     if (
-                        await databaseService.SelectAliasAsync(playerId).ConfigureAwait(false)
-                        is not { } checkAlias
+                        await databaseService.SelectAliasAsync(playerId).ConfigureAwait(false) is
+                        { } checkAlias
                     )
                     {
-                        return;
-                    }
+                        uint checkAliasHash = MurmurHash2.HashString(checkAlias);
 
-                    uint checkAliasHash = MurmurHash2.HashString(checkAlias);
-
-                    if (playerNameHash == checkAliasHash)
-                    {
-                        return;
+                        if (playerNameHash == checkAliasHash)
+                        {
+                            return;
+                        }
                     }
 
                     await databaseService
