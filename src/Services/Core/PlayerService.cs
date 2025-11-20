@@ -143,11 +143,7 @@ internal sealed class PlayerService : IPlayerService, IDisposable
             }
             catch (Exception ex)
             {
-                _logService.LogError(
-                    $"IntervalService.OnElapsed()",
-                    exception: ex,
-                    logger: _logger
-                );
+                _logService.LogError($"PlayerService.OnElapsed()", exception: ex, logger: _logger);
             }
         });
 

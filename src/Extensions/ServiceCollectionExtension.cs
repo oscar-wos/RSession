@@ -59,6 +59,7 @@ public static class ServiceCollectionExtension
     {
         _ = services.AddSingleton<IEventListener, OnClientDisconnectedService>();
         _ = services.AddSingleton<IEventListener, OnClientSteamAuthorizeService>();
+        _ = services.AddSingleton<IEventListener, OnClientSteamAuthorizeFailService>();
         _ = services.AddSingleton<IEventListener, OnSteamAPIActivatedService>();
 
         return services;
