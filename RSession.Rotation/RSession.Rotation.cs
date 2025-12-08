@@ -24,7 +24,7 @@ namespace RSession.Rotation;
 
 [PluginMetadata(
     Id = "RSession.Rotation",
-    Version = "1.1.2",
+    Version = "1.1.3",
     Name = "RSession.Rotation",
     Website = "https://github.com/oscar-wos/RSession",
     Author = "oscar-wos"

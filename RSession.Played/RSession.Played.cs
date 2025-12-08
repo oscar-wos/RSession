@@ -24,7 +24,7 @@ namespace RSession.Played;
 
 [PluginMetadata(
     Id = "RSession.Played",
-    Version = "1.1.2",
+    Version = "1.1.3",
     Name = "RSession.Played",
     Website = "https://github.com/oscar-wos/RSession",
     Author = "oscar-wos"

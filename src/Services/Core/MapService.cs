@@ -35,8 +35,8 @@ internal sealed class MapService(
     private readonly IDatabaseService _databaseService = databaseFactory.GetDatabaseService();
     private readonly IEventService _eventService = eventService;
 
-    private string? _lastMapName;
     private short? _id;
+    private string? _lastMapName;
 
     public short? GetMapId() => _id;
 
@@ -51,6 +51,7 @@ internal sealed class MapService(
                 return;
             }
 
+            _id = null;
             _lastMapName = mapName;
 
             string workshopIdString = _core.Engine.WorkshopId;
