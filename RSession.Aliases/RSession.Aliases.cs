@@ -23,7 +23,7 @@ namespace RSession.Aliases;
 
 [PluginMetadata(
     Id = "RSession.Aliases",
-    Version = "1.1.3",
+    Version = "1.1.4",
     Name = "RSession.Aliases",
     Website = "https://github.com/oscar-wos/RSession",
     Author = "oscar-wos"

@@ -220,5 +220,5 @@ internal sealed class PostgresService : IPostgresService
         return builder.ConnectionString;
     }
 
-    public async ValueTask DisposeAsync() => await _dataSource.DisposeAsync().ConfigureAwait(false);
+    public void Dispose() => _dataSource.Dispose();
 }

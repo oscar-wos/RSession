@@ -18,7 +18,6 @@ using RSession.Contracts.Event;
 using RSession.Contracts.Log;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Events;
-using SwiftlyS2.Shared.ProtobufDefinitions;
 
 namespace RSession.Services.Event;
 
@@ -43,11 +42,6 @@ internal sealed class OnClientDisconnectedService(
 
     private void OnClientDisconnected(IOnClientDisconnectedEvent @event)
     {
-        if (@event.Reason == ENetworkDisconnectionReason.NETWORK_DISCONNECT_SHUTDOWN)
-        {
-            return;
-        }
-
         int playerId = @event.PlayerId;
 
         if (_core.PlayerManager.GetPlayer(playerId) is not { } player)

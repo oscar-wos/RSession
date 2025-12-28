@@ -16,7 +16,7 @@ using RSession.Shared.Contracts.Database;
 
 namespace RSession.Contracts.Database;
 
-internal interface IDatabaseService : ISessionDatabaseService, IAsyncDisposable
+internal interface IDatabaseService : ISessionDatabaseService, IDisposable
 {
     Task CreateTablesAsync();
     Task<short> GetMapAsync(string mapName, long? workshopId);

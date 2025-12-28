@@ -30,7 +30,7 @@ namespace RSession;
 
 [PluginMetadata(
     Id = "RSession",
-    Version = "1.1.3",
+    Version = "1.1.4",
     Name = "RSession",
     Website = "https://github.com/oscar-wos/RSession",
     Author = "oscar-wos"
@@ -119,10 +119,6 @@ public sealed class RSession(ISwiftlyCore core) : BasePlugin(core)
     public override async void Unload()
     {
         _eventService?.InvokeDispose();
-
-        if (_serviceProvider is IAsyncDisposable asyncDisposable)
-        {
-            await asyncDisposable.DisposeAsync().ConfigureAwait(false);
-        }
+        (_serviceProvider as IDisposable)?.Dispose();
     }
 }

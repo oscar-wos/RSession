@@ -220,5 +220,5 @@ internal sealed class SqlService : ISqlService
         return builder.ConnectionString;
     }
 
-    public async ValueTask DisposeAsync() => await _dataSource.DisposeAsync().ConfigureAwait(false);
+    public void Dispose() => _dataSource.Dispose();
 }
