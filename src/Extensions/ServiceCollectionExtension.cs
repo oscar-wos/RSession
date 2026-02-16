@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddEvents(this IServiceCollection services)
     {
         _ = services.AddSingleton<IEventListener, OnClientDisconnectedService>();
-        _ = services.AddSingleton<IEventListener, OnClientSteamAuthorizeService>();
+        _ = services.AddSingleton<IEventListener, OnClientPutInServerService>();
         _ = services.AddSingleton<IEventListener, OnClientSteamAuthorizeFailService>();
         _ = services.AddSingleton<IEventListener, OnMapLoadService>();
         _ = services.AddSingleton<IEventListener, OnSteamAPIActivatedService>();
