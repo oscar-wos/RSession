@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,38 +21,43 @@ using SwiftlyS2.Shared.Events;
 
 namespace RSession.Services.Event;
 
-internal sealed class OnClientSteamAuthorizeService(
+internal sealed class OnClientPutInServerService(
     ISwiftlyCore core,
     ILogService logService,
-    ILogger<OnClientSteamAuthorizeService> logger,
+    ILogger<OnClientPutInServerService> logger,
     IPlayerService playerService,
     IServerService serverService
 ) : IEventListener
 {
     private readonly ISwiftlyCore _core = core;
     private readonly ILogService _logService = logService;
-    private readonly ILogger<OnClientSteamAuthorizeService> _logger = logger;
+    private readonly ILogger<OnClientPutInServerService> _logger = logger;
 
     private readonly IPlayerService _playerService = playerService;
     private readonly IServerService _serverService = serverService;
 
     public void Subscribe()
     {
-        _core.Event.OnClientSteamAuthorize += OnClientSteamAuthorize;
+        _core.Event.OnClientPutInServer += OnClientPutInServer;
         _logService.LogInformation("OnClientSteamAuthorize subscribed", logger: _logger);
     }
 
-    private void OnClientSteamAuthorize(IOnClientSteamAuthorizeEvent @event)
+    private void OnClientPutInServer(IOnClientPutInServerEvent @event)
     {
         int playerId = @event.PlayerId;
 
         if (_core.PlayerManager.GetPlayer(playerId) is not { } player)
         {
             _logService.LogWarning(
-                $"OnClientSteamAuthorize Player not found - {playerId}",
+                $"OnClientPutInServer Player not found - {playerId}",
                 logger: _logger
             );
 
+            return;
+        }
+
+        if (player.IsFakeClient)
+        {
             return;
         }
 
@@ -69,5 +74,5 @@ internal sealed class OnClientSteamAuthorizeService(
         _playerService.HandlePlayerAuthorize(player, serverId);
     }
 
-    public void Dispose() => _core.Event.OnClientSteamAuthorize -= OnClientSteamAuthorize;
+    public void Dispose() => _core.Event.OnClientPutInServer -= OnClientPutInServer;
 }

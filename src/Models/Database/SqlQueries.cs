@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@ public class SqlQueries(string prefix) : LoadQueries, IDatabaseQueries
     protected override string CreatePlayers =>
         $"""
             CREATE TABLE IF NOT EXISTS {_prefix}players (
-                id INT AUTO_INCREMENT,
-                steam_id BIGINT NOT NULL PRIMARY KEY,
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                steam_id BIGINT NOT NULL,
                 first_seen DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 last_seen DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
