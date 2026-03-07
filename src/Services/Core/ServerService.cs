@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,36 +42,42 @@ internal sealed class ServerService(
     public short? GetServerId() => _id;
 
     public void Initialize() =>
-        Task.Run(async () =>
-        {
-            string ip = _core.Engine.ServerIP ?? "0.0.0.0";
-            ushort port = (ushort)(_core.ConVar.Find<int>("hostport")?.Value ?? 0);
-
-            try
+        _core.Scheduler.DelayBySeconds(
+            3.3f,
+            () =>
             {
-                await _databaseService.CreateTablesAsync().ConfigureAwait(false);
+                string ip = _core.Engine.ServerIP ?? "0.0.0.0";
+                ushort port = (ushort)(_core.ConVar.Find<int>("hostport")?.Value ?? 27015);
 
-                short serverId = await _databaseService
-                    .GetServerAsync(ip, port)
-                    .ConfigureAwait(false);
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _databaseService.CreateTablesAsync().ConfigureAwait(false);
 
-                _logService.LogInformation(
-                    $"Server registered - {ip}:{port} | Server ID: {serverId}",
-                    logger: _logger
-                );
+                        short serverId = await _databaseService
+                            .GetServerAsync(ip, port)
+                            .ConfigureAwait(false);
 
-                _id = serverId;
-                _eventService.InvokeServerRegistered(serverId);
+                        _logService.LogInformation(
+                            $"Server registered - {ip}:{port} | Server ID: {serverId}",
+                            logger: _logger
+                        );
 
-                _mapService.HandleMapLoad(_core.Engine.GlobalVars.MapName);
+                        _id = serverId;
+                        _eventService.InvokeServerRegistered(serverId);
+
+                        _mapService.HandleMapLoad(_core.Engine.GlobalVars.MapName);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logService.LogError(
+                            $"Unable to register server - {ip}:{port}",
+                            exception: ex,
+                            logger: _logger
+                        );
+                    }
+                });
             }
-            catch (Exception ex)
-            {
-                _logService.LogError(
-                    $"Unable to register server - {ip}:{port}",
-                    exception: ex,
-                    logger: _logger
-                );
-            }
-        });
+        );
 }

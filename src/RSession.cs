@@ -30,7 +30,7 @@ namespace RSession;
 
 [PluginMetadata(
     Id = "RSession",
-    Version = "1.2.0",
+    Version = "1.2.1",
     Name = "RSession",
     Website = "https://github.com/oscar-wos/RSession",
     Author = "oscar-wos"
@@ -90,7 +90,6 @@ public sealed class RSession(ISwiftlyCore core) : BasePlugin(core)
         ServiceCollection services = new();
 
         _ = services.AddSwiftly(Core);
-
         _ = services.AddConfigs();
         _ = services.AddDatabases();
         _ = services.AddEvents();
