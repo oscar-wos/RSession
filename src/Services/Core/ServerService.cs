@@ -50,35 +50,38 @@ internal sealed class ServerService(
                     string ip = _core.Engine.ServerIP ?? "0.0.0.0";
                     ushort port = (ushort)(_core.ConVar.Find<int>("hostport")?.Value ?? 27015);
 
-                    _ = Task.Run(async () =>
+                    try
                     {
-                        try
-                        {
-                            await _databaseService.CreateTablesAsync().ConfigureAwait(false);
+                        _databaseService
+                            .CreateTablesAsync()
+                            .ConfigureAwait(false)
+                            .GetAwaiter()
+                            .GetResult();
 
-                            short serverId = await _databaseService
-                                .GetServerAsync(ip, port)
-                                .ConfigureAwait(false);
+                        short serverId = _databaseService
+                            .GetServerAsync(ip, port)
+                            .ConfigureAwait(false)
+                            .GetAwaiter()
+                            .GetResult();
 
-                            _logService.LogInformation(
-                                $"Server registered - {ip}:{port} | Server ID: {serverId}",
-                                logger: _logger
-                            );
+                        _logService.LogInformation(
+                            $"Server registered - {ip}:{port} | Server ID: {serverId}",
+                            logger: _logger
+                        );
 
-                            _id = serverId;
-                            _eventService.InvokeServerRegistered(serverId);
+                        _id = serverId;
+                        _eventService.InvokeServerRegistered(serverId);
 
-                            _mapService.HandleMapLoad(_core.Engine.GlobalVars.MapName);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logService.LogError(
-                                $"Unable to register server - {ip}:{port}",
-                                exception: ex,
-                                logger: _logger
-                            );
-                        }
-                    });
+                        _mapService.HandleMapLoad(_core.Engine.GlobalVars.MapName);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logService.LogError(
+                            $"Unable to register server - {ip}:{port}",
+                            exception: ex,
+                            logger: _logger
+                        );
+                    }
                 }
             )
         );
