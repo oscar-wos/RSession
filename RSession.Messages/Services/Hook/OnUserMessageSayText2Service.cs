@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ internal sealed class OnUserMessageSayText2Service(
     ILogService logService,
     ILogger<OnUserMessageSayText2Service> logger,
     IPlayerService playerService
-) : IHook
+) : IOnUserMessageSayText2Service
 {
     private const string CSTRIKE_CHAT_ALL = "Cstrike_Chat_All";
     private const string CSTRIKE_CHAT_ALL_SPEC = "Cstrike_Chat_AllSpec";

@@ -37,47 +37,49 @@ internal sealed class ServerService(
     private readonly IEventService _eventService = eventService;
     private readonly IMapService _mapService = mapService;
 
-    private short? _id;
+    private short? _id = null;
 
     public short? GetServerId() => _id;
 
     public void Initialize() =>
-        _core.Scheduler.DelayBySeconds(
-            3.3f,
-            () =>
-            {
-                string ip = _core.Engine.ServerIP ?? "0.0.0.0";
-                ushort port = (ushort)(_core.ConVar.Find<int>("hostport")?.Value ?? 27015);
-
-                _ = Task.Run(async () =>
+        _core.Scheduler.NextWorldUpdate(() =>
+            _core.Scheduler.DelayBySeconds(
+                3.3f,
+                () =>
                 {
-                    try
+                    string ip = _core.Engine.ServerIP ?? "0.0.0.0";
+                    ushort port = (ushort)(_core.ConVar.Find<int>("hostport")?.Value ?? 27015);
+
+                    _ = Task.Run(async () =>
                     {
-                        await _databaseService.CreateTablesAsync().ConfigureAwait(false);
+                        try
+                        {
+                            await _databaseService.CreateTablesAsync().ConfigureAwait(false);
 
-                        short serverId = await _databaseService
-                            .GetServerAsync(ip, port)
-                            .ConfigureAwait(false);
+                            short serverId = await _databaseService
+                                .GetServerAsync(ip, port)
+                                .ConfigureAwait(false);
 
-                        _logService.LogInformation(
-                            $"Server registered - {ip}:{port} | Server ID: {serverId}",
-                            logger: _logger
-                        );
+                            _logService.LogInformation(
+                                $"Server registered - {ip}:{port} | Server ID: {serverId}",
+                                logger: _logger
+                            );
 
-                        _id = serverId;
-                        _eventService.InvokeServerRegistered(serverId);
+                            _id = serverId;
+                            _eventService.InvokeServerRegistered(serverId);
 
-                        _mapService.HandleMapLoad(_core.Engine.GlobalVars.MapName);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logService.LogError(
-                            $"Unable to register server - {ip}:{port}",
-                            exception: ex,
-                            logger: _logger
-                        );
-                    }
-                });
-            }
+                            _mapService.HandleMapLoad(_core.Engine.GlobalVars.MapName);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logService.LogError(
+                                $"Unable to register server - {ip}:{port}",
+                                exception: ex,
+                                logger: _logger
+                            );
+                        }
+                    });
+                }
+            )
         );
 }

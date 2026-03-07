@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,12 +12,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-using RSession.Shared.Contracts.Core;
+namespace RSession.Messages.Contracts.Hook;
 
-namespace RSession.Contracts.Core;
-
-internal interface IMapService : ISessionMapService
-{
-    void HandleMapLoad(string mapName);
-    void HandleMapUnload();
-}
+internal interface IOnUserMessageSayText2Service : IHook { }

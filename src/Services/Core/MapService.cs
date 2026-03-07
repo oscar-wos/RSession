@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,47 +40,47 @@ internal sealed class MapService(
 
     public short? GetMapId() => _id;
 
-    public void HandleMapLoad(string mapName) =>
-        _core.Scheduler.NextWorldUpdate(() => OnMapLoad(mapName));
-
-    private void OnMapLoad(string mapName) =>
-        Task.Run(async () =>
+    public void HandleMapLoad(string mapName)
+    {
+        if (_lastMapName == mapName)
         {
-            if (_lastMapName == mapName)
-            {
-                return;
-            }
+            return;
+        }
 
-            _id = null;
-            _lastMapName = mapName;
+        _id = null;
+        _lastMapName = mapName;
 
-            string workshopIdString = _core.Engine.WorkshopId;
+        string workshopIdString = _core.Engine.WorkshopId;
 
-            long? workshopId = string.IsNullOrEmpty(workshopIdString)
-                ? null
-                : long.Parse(workshopIdString);
+        long? workshopId = string.IsNullOrEmpty(workshopIdString)
+            ? null
+            : long.Parse(workshopIdString);
 
-            try
-            {
-                short mapId = await _databaseService
-                    .GetMapAsync(mapName, workshopId)
-                    .ConfigureAwait(false);
+        try
+        {
+            short mapId = _databaseService
+                .GetMapAsync(mapName, workshopId)
+                .ConfigureAwait(false)
+                .GetAwaiter()
+                .GetResult();
 
-                _logService.LogInformation(
-                    $"Map registered - {mapName} ({workshopId}) | Map ID: {mapId}",
-                    logger: _logger
-                );
+            _logService.LogInformation(
+                $"Map registered - {mapName} ({workshopId}) | Map ID: {mapId}",
+                logger: _logger
+            );
 
-                _id = mapId;
-                _eventService.InvokeMapRegistered(mapId);
-            }
-            catch (Exception ex)
-            {
-                _logService.LogError(
-                    $"Unable to register map - {mapName} ({workshopId})",
-                    exception: ex,
-                    logger: _logger
-                );
-            }
-        });
+            _id = mapId;
+            _eventService.InvokeMapRegistered(mapId);
+        }
+        catch (Exception ex)
+        {
+            _logService.LogError(
+                $"Unable to register map - {mapName} ({workshopId})",
+                exception: ex,
+                logger: _logger
+            );
+        }
+    }
+
+    public void HandleMapUnload() => _id = null;
 }

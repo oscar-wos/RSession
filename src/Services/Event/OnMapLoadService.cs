@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@ internal sealed class OnMapLoadService(
     ISwiftlyCore core,
     ILogService logService,
     ILogger<OnMapLoadService> logger,
-    IMapService mapService
+    IMapService mapService,
+    IServerService serverService
 ) : IEventListener
 {
     private readonly ISwiftlyCore _core = core;
@@ -33,6 +34,7 @@ internal sealed class OnMapLoadService(
     private readonly ILogger<OnMapLoadService> _logger = logger;
 
     private readonly IMapService _mapService = mapService;
+    private readonly IServerService _serverService = serverService;
 
     public void Subscribe()
     {
@@ -42,6 +44,11 @@ internal sealed class OnMapLoadService(
 
     private void OnMapLoad(IOnMapLoadEvent @event)
     {
+        if (_serverService.GetServerId() is null)
+        {
+            return;
+        }
+
         string mapName = @event.MapName;
 
         _logService.LogDebug($"Map loaded {mapName}", logger: _logger);

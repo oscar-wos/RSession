@@ -61,6 +61,7 @@ public static class ServiceCollectionExtension
         _ = services.AddSingleton<IEventListener, OnClientPutInServerService>();
         _ = services.AddSingleton<IEventListener, OnClientSteamAuthorizeFailService>();
         _ = services.AddSingleton<IEventListener, OnMapLoadService>();
+        _ = services.AddSingleton<IEventListener, OnMapUnloadService>();
         _ = services.AddSingleton<IEventListener, OnSteamAPIActivatedService>();
 
         return services;
@@ -76,8 +77,8 @@ public static class ServiceCollectionExtension
         _ = services.AddSingleton<PlayerService>();
         _ = services.AddSingleton<ServerService>();
 
-        _ = services.AddSingleton<IEventService>(serviceProvider =>
-            serviceProvider.GetRequiredService<EventService>()
+        _ = services.AddSingleton<IEventService>(services =>
+            services.GetRequiredService<EventService>()
         );
 
         _ = services.AddSingleton<IMapService>(serviceProvider =>

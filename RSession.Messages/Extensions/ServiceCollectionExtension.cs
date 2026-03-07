@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,12 +34,12 @@ public static class ServiceCollectionExtension
         _ = services.AddSingleton<PostgresService>();
         _ = services.AddSingleton<SqlService>();
 
-        _ = services.AddSingleton(serviceProvider => new Lazy<IPostgresService>(() =>
-            serviceProvider.GetRequiredService<PostgresService>()
+        _ = services.AddSingleton(services => new Lazy<IPostgresService>(() =>
+            services.GetRequiredService<PostgresService>()
         ));
 
-        _ = services.AddSingleton(serviceProvider => new Lazy<ISqlService>(() =>
-            serviceProvider.GetRequiredService<SqlService>()
+        _ = services.AddSingleton(services => new Lazy<ISqlService>(() =>
+            services.GetRequiredService<SqlService>()
         ));
 
         _ = services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
@@ -51,8 +51,8 @@ public static class ServiceCollectionExtension
     {
         _ = services.AddSingleton<IOnDatabaseConfiguredService, OnDatabaseConfiguredService>();
 
-        _ = services.AddSingleton<ISessionEventListener>(serviceProvider =>
-            serviceProvider.GetRequiredService<IOnDatabaseConfiguredService>()
+        _ = services.AddSingleton<ISessionEventListener>(services =>
+            services.GetRequiredService<IOnDatabaseConfiguredService>()
         );
 
         return services;
@@ -60,7 +60,11 @@ public static class ServiceCollectionExtension
 
     public static IServiceCollection AddHooks(this IServiceCollection services)
     {
-        _ = services.AddSingleton<IHook, OnUserMessageSayText2Service>();
+        _ = services.AddSingleton<IOnUserMessageSayText2Service, OnUserMessageSayText2Service>();
+
+        _ = services.AddSingleton<IHook>(services =>
+            services.GetRequiredService<IOnUserMessageSayText2Service>()
+        );
 
         return services;
     }

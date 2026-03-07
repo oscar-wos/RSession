@@ -39,11 +39,16 @@ internal sealed class OnClientPutInServerService(
     public void Subscribe()
     {
         _core.Event.OnClientPutInServer += OnClientPutInServer;
-        _logService.LogInformation("OnClientSteamAuthorize subscribed", logger: _logger);
+        _logService.LogInformation("OnClientPutInServer subscribed", logger: _logger);
     }
 
     private void OnClientPutInServer(IOnClientPutInServerEvent @event)
     {
+        if (_serverService.GetServerId() is not { } serverId)
+        {
+            return;
+        }
+
         int playerId = @event.PlayerId;
 
         if (_core.PlayerManager.GetPlayer(playerId) is not { } player)
@@ -57,11 +62,6 @@ internal sealed class OnClientPutInServerService(
         }
 
         if (player.IsFakeClient)
-        {
-            return;
-        }
-
-        if (_serverService.GetServerId() is not { } serverId)
         {
             return;
         }
