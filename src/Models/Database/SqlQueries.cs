@@ -73,6 +73,8 @@ public class SqlQueries(string prefix) : LoadQueries, IDatabaseQueries
     public string InsertPlayer =>
         $"INSERT INTO {_prefix}players (steam_id) VALUES (@steamId); SELECT LAST_INSERT_ID()";
 
+    public string SelectSteamId => $"SELECT steam_id FROM {_prefix}players WHERE id = @playerId";
+
     public string SelectServer =>
         $"SELECT id FROM {_prefix}servers WHERE ip = @ip AND port = @port";
 

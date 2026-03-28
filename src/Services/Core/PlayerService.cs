@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using RSession.Contracts.Core;
 using RSession.Contracts.Database;
 using RSession.Contracts.Log;
+using RSession.Shared.Contracts.Core;
 using RSession.Shared.Structs;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Players;
@@ -66,6 +67,9 @@ internal sealed class PlayerService : IPlayerService
         _players.TryGetValue(player.SteamID, out SessionPlayer sessionPlayer)
             ? sessionPlayer
             : null;
+
+    public async Task<long?> GetSteamIdByPlayerId(int playerId) =>
+        await _databaseService.GetSteamIdAsync(playerId).ConfigureAwait(false);
 
     public void HandlePlayerAuthorize(IPlayer player, short serverId) =>
         Task.Run(async () =>

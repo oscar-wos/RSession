@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ namespace RSession.Aliases;
 
 [PluginMetadata(
     Id = "RSession.Aliases",
-    Version = "1.1.4",
+    Version = "1.2.4",
     Name = "RSession.Aliases",
     Website = "https://github.com/oscar-wos/RSession",
     Author = "oscar-wos"

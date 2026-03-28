@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -200,6 +200,23 @@ internal sealed class PostgresService : IPostgresService
             _ = command.Parameters.AddWithValue("@sessionIds", sessionIds);
             _ = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
+    }
+
+    public async Task<long?> GetSteamIdAsync(int playerId)
+    {
+        await using NpgsqlConnection connection = await _dataSource
+            .OpenConnectionAsync()
+            .ConfigureAwait(false);
+
+        await using NpgsqlCommand command = new(_queries.SelectSteamId, connection);
+        _ = command.Parameters.AddWithValue("@playerId", playerId);
+
+        if (await command.ExecuteScalarAsync().ConfigureAwait(false) is long result)
+        {
+            return result;
+        }
+
+        return null;
     }
 
     private string BuildConnectionString(ConnectionConfig config)

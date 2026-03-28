@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ internal interface IDatabaseService : ISessionDatabaseService, IDisposable
     Task CreateTablesAsync();
     Task<short> GetMapAsync(string mapName, long? workshopId);
     Task<int> GetPlayerAsync(ulong steamId);
+    Task<long?> GetSteamIdAsync(int playerId);
     Task<short> GetServerAsync(string serverIp, ushort serverPort);
     Task<long> GetSessionAsync(int playerId, short serverId, string ip);
     Task UpdateSessionsAsync(List<int> playerIds, List<long> sessionIds);

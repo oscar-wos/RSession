@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -72,6 +72,8 @@ public class PostgresQueries(string prefix) : LoadQueries, IDatabaseQueries
 
     public string InsertPlayer =>
         $"INSERT INTO {_prefix}players (steam_id) VALUES (@steamId) RETURNING id";
+
+    public string SelectSteamId => $"SELECT steam_id FROM {_prefix}players WHERE id = @playerId";
 
     public string SelectServer =>
         $"SELECT id FROM {_prefix}servers WHERE ip = CAST(@ip as INET) AND port = @port";

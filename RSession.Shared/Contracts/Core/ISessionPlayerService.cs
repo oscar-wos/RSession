@@ -1,4 +1,4 @@
-// Copyright (C) 2025 oscar-wos
+// Copyright (C) 2026 oscar-wos
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,4 +22,5 @@ public interface ISessionPlayerService
     int? GetPlayerId(IPlayer player);
     long? GetSessionId(IPlayer player);
     SessionPlayer? GetSessionPlayer(IPlayer player);
+    Task<long?> GetSteamIdByPlayerId(int playerId);
 }
